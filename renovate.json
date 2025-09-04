@@ -1,0 +1,28 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":dependencyDashboard"
+  ],
+  "baseBranchPatterns": [
+    "main"
+  ],
+  "docker-compose": {
+    "managerFilePatterns": [
+      "/^infra\\/compose/.*\\.ya?ml$/"
+    ]
+  },
+  "enabledManagers": [
+    "docker-compose"
+  ],
+  "packageRules": [
+    {
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "automerge": true
+    }
+  ],
+  "ignoreTests": true
+}

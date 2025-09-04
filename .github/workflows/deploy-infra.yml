@@ -1,0 +1,48 @@
+name: Deploy applications
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "infra/compose/**"
+      - ".github/workflows/deploy-infra.yml"
+  workflow_dispatch:
+
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - uses: jdx/mise-action@v3
+
+      - name: Install 1Password CLI
+        uses: 1password/install-cli-action@v1
+
+      - name: Tailscale Setup
+        uses: tailscale/github-action@v3
+        with:
+          oauth-client-id: ${{ secrets.TS_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_CLIENT_SECRET }}
+          tags: tag:ci
+
+      - name: Add SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          op read "op://Starforge Foundry/tfsdu56w4w2l7ixjqb526uuox4/private key?ssh-format=openssh" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Deploy playbook
+        run: just deploy
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: False
