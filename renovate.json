@@ -22,6 +22,12 @@
         "patch"
       ],
       "automerge": true
+    },
+    {
+      "matchPackageNames": [
+        "ghcr.io/blakeblackshear/frigate:0.16.0"
+      ],
+      "enabled": false
     }
   ],
   "ignoreTests": true

@@ -6,4 +6,4 @@
       include_tasks: tasks/docker-deploy.yml
       vars:
         deploy_dir: "/home/{{ ansible_user }}/deploy"
-        compose_dir: "../../infra/compose"
+        compose_dir: "../../compose"

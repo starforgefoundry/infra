@@ -6,14 +6,14 @@ services:
       - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL}
     restart: unless-stopped
 
-  starboi:
-    image: ghcr.io/bwees/starboi:latest
-    volumes:
-      - /home/bwees/cluster-storage/starboi:/data
-    environment:
-      - STARBOI_TOKEN=${STARBOI_TOKEN}
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
-    restart: unless-stopped
+  # starboi:
+  #   image: ghcr.io/bwees/starboi:latest
+  #   volumes:
+  #     - /home/bwees/cluster-storage/starboi:/data
+  #   environment:
+  #     - STARBOI_TOKEN=${STARBOI_TOKEN}
+  #     - OPENAI_API_KEY=${OPENAI_API_KEY}
+  #   restart: unless-stopped
 
   bwees-ts:
     image: tailscale/tailscale:v1.86.5
@@ -35,7 +35,7 @@ services:
     restart: unless-stopped
 
   frigate:
-    image: ghcr.io/blakeblackshear/frigate:0.16.1
+    image: ghcr.io/blakeblackshear/frigate:0.16.0
     restart: unless-stopped
     privileged: true
     stop_grace_period: 30s # allow enough time to shut down the various services
@@ -58,7 +58,41 @@ services:
       - FRIGATE_TAPO_CLOUD_PASSWORD=${FRIGATE_TAPO_CLOUD_PASSWORD}
     ports:
       - "8971:8971"
-      # - "5000:5000" # Internal unauthenticated access. Expose carefully.
+      - "100.125.29.116:5000:5000" # Internal unauthenticated access. Expose carefully.
       - "8554:8554" # RTSP feeds
       - "8555:8555/tcp" # WebRTC over tcp
       - "8555:8555/udp" # WebRTC over udp
+    labels:
+      - "traefik.http.routers.frigate.rule=Host(`cam.starforgefoundry.com`)"
+      - "traefik.http.routers.frigate.middlewares=traefik-forward-auth"
+      - "traefik.http.routers.frigate.entrypoints=websecure"
+      - "traefik.http.services.frigate.loadbalancer.server.port=8971"
+      - "traefik.http.services.frigate.loadbalancer.server.scheme=https"
+
+  traefik:
+    image: traefik:v3.5.2
+    command: 
+    - "--providers.docker"
+    - "--entrypoints.websecure.address=:443"
+    - "--entrypoints.websecure.http.tls=true"
+    - "--serversTransport.insecureSkipVerify=true"
+
+
+    ports:
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  traefik-forward-auth:
+    image: thomseddon/traefik-forward-auth:2
+    environment:
+      - PROVIDERS_OIDC_ISSUER_URL=https://starforgefoundry-0efu3o.us1.zitadel.cloud
+      - PROVIDERS_OIDC_CLIENT_ID=${ZITADEL_CLIENT_ID}
+      - PROVIDERS_OIDC_CLIENT_SECRET=${ZITADEL_CLIENT_SECRET}
+      - DEFAULT_PROVIDER=oidc
+      - SECRET=${AUTH_SECRET}
+    labels:
+      - "traefik.http.middlewares.traefik-forward-auth.forwardauth.address=http://traefik-forward-auth:4181"
+      - "traefik.http.middlewares.traefik-forward-auth.forwardauth.authResponseHeaders=X-Forwarded-User,X-Forwarded-Groups"
+      - "traefik.http.middlewares.https-endpoint.headers.customrequestheaders.X-Forwarded-Proto=https"
+      - "traefik.http.services.traefik-forward-auth.loadbalancer.server.port=4181"
