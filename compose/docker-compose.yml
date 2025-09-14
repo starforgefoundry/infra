@@ -35,7 +35,7 @@ services:
     restart: unless-stopped
 
   frigate:
-    image: ghcr.io/blakeblackshear/frigate:0.16.0
+    image: ghcr.io/blakeblackshear/frigate:0.16.1
     restart: unless-stopped
     privileged: true
     stop_grace_period: 30s # allow enough time to shut down the various services
