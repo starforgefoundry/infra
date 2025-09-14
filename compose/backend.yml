@@ -1,0 +1,92 @@
+
+name: backend
+
+networks:
+  backend:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.40.0.0/24
+
+services:
+  cloudflared:
+    image: cloudflare/cloudflared:2025.8.1
+    command: tunnel --no-autoupdate run
+    environment:
+      - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL}
+    networks:
+      - backend
+    restart: unless-stopped
+
+  bwees-ts:
+    image: tailscale/tailscale:v1.86.5
+    hostname: starforge-subnet-router
+    healthcheck:
+      test: ["CMD-SHELL", "tailscale status"]
+      interval: 1s
+      timeout: 5s
+      retries: 60
+    environment:
+      - TZ=America/New_York
+      - TS_EXTRA_ARGS=--reset --advertise-routes=10.0.10.0/23,10.0.20.0/24,10.0.50.0/24
+      - TS_STATE_DIR=/var/lib/tailscale
+    volumes:
+      - /home/starforge/data/bwees-ts:/var/lib/tailscale
+    cap_add:
+      - net_admin
+      - sys_module
+    restart: unless-stopped
+
+  traefik:
+    image: traefik:v3.5.2
+    command: 
+    - "--providers.docker"
+    - "--entrypoints.websecure.address=:443"
+    - "--entrypoints.websecure.http.tls=true"
+    - "--serversTransport.insecureSkipVerify=true"
+    ports:
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - backend
+    restart: unless-stopped
+
+  traefik-forward-auth:
+    image: thomseddon/traefik-forward-auth:2
+    environment:
+      - PROVIDERS_OIDC_ISSUER_URL=https://starforgefoundry-0efu3o.us1.zitadel.cloud
+      - PROVIDERS_OIDC_CLIENT_ID=${ZITADEL_CLIENT_ID}
+      - PROVIDERS_OIDC_CLIENT_SECRET=${ZITADEL_CLIENT_SECRET}
+      - DEFAULT_PROVIDER=oidc
+      - SECRET=${AUTH_SECRET}
+    labels:
+      - "traefik.http.middlewares.traefik-forward-auth.forwardauth.address=http://traefik-forward-auth:4181"
+      - "traefik.http.middlewares.traefik-forward-auth.forwardauth.authResponseHeaders=X-Forwarded-User"
+      - "traefik.http.services.traefik-forward-auth.loadbalancer.server.port=4181"
+    networks:
+      - backend
+    restart: unless-stopped
+    
+  zitadel-roles:
+    image: ghcr.io/starforgefoundry/zitadel-roles:latest
+    environment:
+      - ZITADEL_INSTANCE=https://starforgefoundry-0efu3o.us1.zitadel.cloud
+      - ZITADEL_TOKEN=${ZITADEL_API_TOKEN}
+    labels:
+      - "traefik.http.middlewares.zitadel-roles.forwardauth.address=http://zitadel-roles:8000/auth"
+      - "traefik.http.middlewares.zitadel-roles.forwardauth.trustForwardHeader=true"
+      - "traefik.http.middlewares.zitadel-roles.forwardauth.authResponseHeaders=X-Forwarded-User,X-Forwarded-Groups"
+    networks:
+      - backend
+    restart: unless-stopped
+
+  whoami:
+    image: containous/whoami
+    labels:
+      - "traefik.http.routers.whoami.rule=Host(`whoami.starforgefoundry.com`)"
+      - "traefik.http.routers.whoami.middlewares=traefik-forward-auth,zitadel-roles"
+      - "traefik.http.routers.whoami.entrypoints=websecure"
+    networks:
+      - backend
+    restart: unless-stopped
