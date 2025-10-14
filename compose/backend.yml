@@ -41,6 +41,7 @@ services:
     image: traefik:v3.5.2
     command: 
     - "--providers.docker"
+    - "--providers.docker.exposedbydefault=false"
     - "--entrypoints.websecure.address=:443"
     - "--entrypoints.websecure.http.tls=true"
     - "--serversTransport.insecureSkipVerify=true"
@@ -62,6 +63,7 @@ services:
       - SECRET=${AUTH_SECRET}
       - LIFETIME=2592000 # 30 days in seconds
     labels:
+      - "traefik.enable=true"
       - "traefik.http.middlewares.traefik-forward-auth.forwardauth.address=http://traefik-forward-auth:4181"
       - "traefik.http.middlewares.traefik-forward-auth.forwardauth.authResponseHeaders=X-Forwarded-User"
       - "traefik.http.services.traefik-forward-auth.loadbalancer.server.port=4181"
@@ -77,6 +79,8 @@ services:
       - ZITADEL_TOKEN=${ZITADEL_API_TOKEN}
       - LIFETIME=2592000 # 30 days in seconds
     labels:
+      - "traefik.enable=true"
+      - 'traefik.docker.network=backend_backend'
       - "traefik.http.middlewares.zitadel-roles.forwardauth.address=http://zitadel-roles:8000/auth"
       - "traefik.http.middlewares.zitadel-roles.forwardauth.trustForwardHeader=true"
       - "traefik.http.middlewares.zitadel-roles.forwardauth.authResponseHeaders=X-Forwarded-User,X-Forwarded-Groups"
