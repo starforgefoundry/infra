@@ -60,6 +60,7 @@ services:
       - PROVIDERS_OIDC_CLIENT_SECRET=${ZITADEL_CLIENT_SECRET}
       - DEFAULT_PROVIDER=oidc
       - SECRET=${AUTH_SECRET}
+      - LIFETIME=2592000 # 30 days in seconds
     labels:
       - "traefik.http.middlewares.traefik-forward-auth.forwardauth.address=http://traefik-forward-auth:4181"
       - "traefik.http.middlewares.traefik-forward-auth.forwardauth.authResponseHeaders=X-Forwarded-User"
