@@ -77,7 +77,6 @@ services:
     environment:
       - ZITADEL_INSTANCE=https://starforgefoundry-0efu3o.us1.zitadel.cloud
       - ZITADEL_TOKEN=${ZITADEL_API_TOKEN}
-      - LIFETIME=2592000 # 30 days in seconds
     labels:
       - "traefik.enable=true"
       - 'traefik.docker.network=backend_backend'
