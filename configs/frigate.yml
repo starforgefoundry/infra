@@ -1,0 +1,299 @@
+mqtt:
+  enabled: false
+
+auth:
+  enabled: False
+  # session_length: 2592000 # 30 days
+
+proxy:
+  default_role: viewer
+  header_map:
+    user: x-forwarded-user
+    role: x-forwarded-groups
+
+go2rtc:
+  streams:
+    couch_cam:
+      - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.79:554/stream1
+      - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.79
+    metalworking_storage:
+      - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.144:554/stream1
+      - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.144
+    woodworking_cam:
+      - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.109:554/stream1
+      - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.109
+    garage_cam:
+      - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.171:554/stream1
+      - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.171
+    worktables_cam:
+      - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.91:554/stream1
+      - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.91
+    eelab_cam:
+      - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.95:554/stream1
+      - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.95
+    print_room_cam:
+      - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.89:554/stream1
+      - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.89
+    storage_hallway_cam:
+      - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.97:554/stream1
+      - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.97
+    welding_room_cam:
+      - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.212:554/stream1
+      - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.212
+    outdoor_a_cam:
+      - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.205:554/stream1
+      - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.205
+    outdoor_b_cam:
+      - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.147:554/stream1
+      - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.147
+    machining_area_cam:
+      - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.149:554/stream1
+      - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.149
+
+
+  # webrtc:
+  #   candidates:
+  #     - 10.0.10.101:8555
+  #     - 100.125.29.116:8555
+  #     - stun:8555
+
+cameras:
+  couch_cam:
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.79:554/stream2
+          roles:
+            - detect
+        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.79:554/stream1
+          roles:
+            - record
+
+    motion:
+      mask:
+        - 0.592,0.205,0.584,0.261,0.859,0.433,0.874,0.338
+        - 0.365,0.055,0,0.053,0,0,0.365,0
+
+  metalworking_storage:
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.144:554/stream2
+          roles:
+            - detect
+        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.144:554/stream1
+          roles:
+            - record
+
+    motion:
+      mask:
+        - 0.001,0.667,0.14,0.472,0.244,0.783,0.123,0.999,0,1
+        - 0.365,0.055,0,0.053,0,0,0.365,0
+
+
+  woodworking_cam:
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.109:554/stream2
+          roles:
+            - detect
+        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.109:554/stream1
+          roles:
+            - record
+    motion:
+      mask:
+        - 0.365,0.055,0,0.053,0,0,0.365,0
+
+  garage_cam:
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.171:554/stream2
+          roles:
+            - detect
+        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.171:554/stream1
+          roles:
+            - record
+    motion:
+      mask:
+        - 0.365,0.055,0,0.053,0,0,0.365,0
+
+  worktables_cam:
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.91:554/stream2
+          roles:
+            - detect
+        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.91:554/stream1
+          roles:
+            - record
+    motion:
+      mask:
+        - 0.365,0.055,0,0.053,0,0,0.365,0
+
+  eelab_cam:
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.95:554/stream2
+          roles:
+            - detect
+        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.95:554/stream1
+          roles:
+            - record
+    motion:
+      mask:
+        - 0.365,0.055,0,0.053,0,0,0.365,0
+
+  print_room_cam:
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.89:554/stream2
+          roles:
+            - detect
+        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.89:554/stream1
+          roles:
+            - record
+    motion:
+      mask:
+        - 0.365,0.055,0,0.053,0,0,0.365,0
+
+  storage_hallway_cam:
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.97:554/stream2
+          roles:
+            - detect
+        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.97:554/stream1
+          roles:
+            - record
+    motion:
+      mask:
+        - 0.365,0.055,0,0.053,0,0,0.365,0
+
+  welding_room_cam:
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.212:554/stream2
+          roles:
+            - detect
+        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.212:554/stream1
+          roles:
+            - record
+    motion:
+      mask:
+        - 0.365,0.055,0,0.053,0,0,0.365,0
+
+  outdoor_a_cam:
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.205:554/stream2
+          roles:
+            - detect
+        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.205:554/stream1
+          roles:
+            - record
+
+    motion:
+      mask:
+        - 0.365,0.055,0,0.053,0,0,0.365,0
+
+    detect:
+      enabled: false
+
+  outdoor_b_cam:
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.147:554/stream2
+          roles:
+            - detect
+        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.147:554/stream1
+          roles:
+            - record
+
+    motion:
+      mask: 0.365,0.055,0,0.053,0,0,0.365,0
+
+    detect:
+      enabled: false
+      
+  machining_area_cam:
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.149:554/stream2
+          roles:
+            - detect
+        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.149:554/stream1
+          roles:
+            - record
+    motion:
+      mask:
+        - 0.365,0.055,0,0.053,0,0,0.365,0
+
+record:
+  enabled: true
+  sync_recordings: true
+  retain:
+    days: 30
+    mode: all
+  alerts:
+    retain:
+      days: 90
+      mode: motion
+  detections:
+    retain:
+      days: 90
+      mode: motion
+
+detectors:
+  ov:
+    type: openvino
+    device: GPU
+
+model:
+  width: 300
+  height: 300
+  input_tensor: nhwc
+  input_pixel_format: bgr
+  path: /openvino-model/ssdlite_mobilenet_v2.xml
+  labelmap_path: /openvino-model/coco_91cl_bkgr.txt
+
+objects:
+  track:
+    - person
+    # - car
+
+# detectors:
+#   onnx:
+#     type: onnx
+
+# model:
+#   model_type: yolonas
+#   width: 320 # <--- should match whatever was set in notebook
+#   height: 320 # <--- should match whatever was set in notebook
+#   input_pixel_format: bgr
+#   input_tensor: nchw
+#   path: /config/yolo_nas_s.onnx
+#   labelmap_path: /labelmap/coco-80.txt
+
+version: 0.16-0
+detect:
+  enabled: true
+semantic_search:
+  enabled: false
+  model_size: small
+face_recognition:
+  enabled: false
+lpr:
+  enabled: false
+classification:
+  bird:
+    enabled: false
