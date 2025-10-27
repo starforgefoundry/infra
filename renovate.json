@@ -9,8 +9,11 @@
   ],
   "docker-compose": {
     "managerFilePatterns": [
-      "/^infra\\/compose/.*\\.ya?ml$/"
-    ]
+      "/^compose/.*\\.ya?ml$/"
+    ],
+    "digest": {
+      "enabled": false
+    }
   },
   "enabledManagers": [
     "docker-compose"
