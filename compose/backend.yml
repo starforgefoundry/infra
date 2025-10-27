@@ -38,7 +38,7 @@ services:
     restart: unless-stopped
 
   traefik:
-    image: traefik:v3.5.2
+    image: traefik:v3.5.3
     command: 
     - "--providers.docker"
     - "--providers.docker.exposedbydefault=false"
