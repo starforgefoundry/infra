@@ -19,7 +19,7 @@ services:
     restart: unless-stopped
 
   bwees-ts:
-    image: tailscale/tailscale:v1.90.5
+    image: tailscale/tailscale:v1.90.6
     hostname: starforge-subnet-router
     healthcheck:
       test: ["CMD-SHELL", "tailscale status"]
