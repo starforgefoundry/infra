@@ -5,18 +5,6 @@ networks:
     external: true
 
 services:
-
-  # starboi:
-  #   image: ghcr.io/bwees/starboi:latest
-  #   volumes:
-  #     - /home/bwees/cluster-storage/starboi:/data
-  #   environment:
-  #     - STARBOI_TOKEN=${STARBOI_TOKEN}
-  #     - OPENAI_API_KEY=${OPENAI_API_KEY}
-  #   restart: unless-stopped
-
-
-
   frigate:
     image: ghcr.io/blakeblackshear/frigate:0.16.2
     restart: unless-stopped

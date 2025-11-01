@@ -19,8 +19,6 @@ var (
 
 	projectIDs = map[string]string{
 		"cam.starforgefoundry.com":     "337742327613232742",
-		"whoami.starforgefoundry.com":  "337742327613232742",
-		"frigate.starforgefoundry.com": "337742327613232742",
 	}
 )
 
