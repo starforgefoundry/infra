@@ -49,25 +49,47 @@ go2rtc:
     machining_area_cam:
       - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.149:554/stream1
       - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.149
+    back_alley_cam:
+      - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.219:554/stream1
+      - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.219
 
-
-  # webrtc:
-  #   candidates:
-  #     - 10.0.10.101:8555
-  #     - 100.125.29.116:8555
-  #     - stun:8555
+  webrtc:
+    candidates:
+      - 10.0.10.101:8555
+      - 100.125.29.116:8555
+      - stun:8555
 
 cameras:
+  back_alley_cam:
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://127.0.0.1:8554/back_alley_cam
+          input_args: preset-rtsp-restream
+          roles:
+            - record
+            - detect
+
+    onvif:
+      host: 10.0.50.219
+      port: 2020
+      user: starforge
+      password: "{FRIGATE_TAPO_PASSWORD}"
+
+    motion:
+      mask:
+        - 0.592,0.205,0.584,0.261,0.859,0.433,0.874,0.338
+        - 0.365,0.055,0,0.053,0,0,0.365,0
+
   couch_cam:
     enabled: true
     ffmpeg:
       inputs:
-        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.79:554/stream2
-          roles:
-            - detect
-        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.79:554/stream1
+        - path: rtsp://127.0.0.1:8554/couch_cam
+          input_args: preset-rtsp-restream
           roles:
             - record
+            - detect
 
     motion:
       mask:
@@ -78,29 +100,25 @@ cameras:
     enabled: true
     ffmpeg:
       inputs:
-        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.144:554/stream2
-          roles:
-            - detect
-        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.144:554/stream1
+        - path: rtsp://127.0.0.1:8554/metalworking_storage
+          input_args: preset-rtsp-restream
           roles:
             - record
-
+            - detect
     motion:
       mask:
         - 0.001,0.667,0.14,0.472,0.244,0.783,0.123,0.999,0,1
         - 0.365,0.055,0,0.053,0,0,0.365,0
 
-
   woodworking_cam:
     enabled: true
     ffmpeg:
       inputs:
-        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.109:554/stream2
-          roles:
-            - detect
-        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.109:554/stream1
+        - path: rtsp://127.0.0.1:8554/woodworking_cam
+          input_args: preset-rtsp-restream
           roles:
             - record
+            - detect
     motion:
       mask:
         - 0.365,0.055,0,0.053,0,0,0.365,0
@@ -109,12 +127,11 @@ cameras:
     enabled: true
     ffmpeg:
       inputs:
-        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.171:554/stream2
-          roles:
-            - detect
-        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.171:554/stream1
+        - path: rtsp://127.0.0.1:8554/garage_cam
+          input_args: preset-rtsp-restream
           roles:
             - record
+            - detect
     motion:
       mask:
         - 0.365,0.055,0,0.053,0,0,0.365,0
@@ -123,12 +140,11 @@ cameras:
     enabled: true
     ffmpeg:
       inputs:
-        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.91:554/stream2
-          roles:
-            - detect
-        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.91:554/stream1
+        - path: rtsp://127.0.0.1:8554/worktables_cam
+          input_args: preset-rtsp-restream
           roles:
             - record
+            - detect
     motion:
       mask:
         - 0.365,0.055,0,0.053,0,0,0.365,0
@@ -137,12 +153,11 @@ cameras:
     enabled: true
     ffmpeg:
       inputs:
-        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.95:554/stream2
-          roles:
-            - detect
-        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.95:554/stream1
+        - path: rtsp://127.0.0.1:8554/eelab_cam
+          input_args: preset-rtsp-restream
           roles:
             - record
+            - detect
     motion:
       mask:
         - 0.365,0.055,0,0.053,0,0,0.365,0
@@ -151,12 +166,11 @@ cameras:
     enabled: true
     ffmpeg:
       inputs:
-        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.89:554/stream2
-          roles:
-            - detect
-        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.89:554/stream1
+        - path: rtsp://127.0.0.1:8554/print_room_cam
+          input_args: preset-rtsp-restream
           roles:
             - record
+            - detect
     motion:
       mask:
         - 0.365,0.055,0,0.053,0,0,0.365,0
@@ -165,12 +179,11 @@ cameras:
     enabled: true
     ffmpeg:
       inputs:
-        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.97:554/stream2
-          roles:
-            - detect
-        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.97:554/stream1
+        - path: rtsp://127.0.0.1:8554/storage_hallway_cam
+          input_args: preset-rtsp-restream
           roles:
             - record
+            - detect
     motion:
       mask:
         - 0.365,0.055,0,0.053,0,0,0.365,0
@@ -179,12 +192,11 @@ cameras:
     enabled: true
     ffmpeg:
       inputs:
-        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.212:554/stream2
-          roles:
-            - detect
-        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.212:554/stream1
+        - path: rtsp://127.0.0.1:8554/welding_room_cam
+          input_args: preset-rtsp-restream
           roles:
             - record
+            - detect
     motion:
       mask:
         - 0.365,0.055,0,0.053,0,0,0.365,0
@@ -193,12 +205,11 @@ cameras:
     enabled: true
     ffmpeg:
       inputs:
-        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.205:554/stream2
-          roles:
-            - detect
-        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.205:554/stream1
+        - path: rtsp://127.0.0.1:8554/outdoor_a_cam
+          input_args: preset-rtsp-restream
           roles:
             - record
+            - detect
 
     motion:
       mask:
@@ -211,29 +222,27 @@ cameras:
     enabled: true
     ffmpeg:
       inputs:
-        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.147:554/stream2
-          roles:
-            - detect
-        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.147:554/stream1
+        - path: rtsp://127.0.0.1:8554/outdoor_b_cam
+          input_args: preset-rtsp-restream
           roles:
             - record
+            - detect
 
     motion:
       mask: 0.365,0.055,0,0.053,0,0,0.365,0
 
     detect:
       enabled: false
-      
+
   machining_area_cam:
     enabled: true
     ffmpeg:
       inputs:
-        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.149:554/stream2
-          roles:
-            - detect
-        - path: rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.149:554/stream1
+        - path: rtsp://127.0.0.1:8554/machining_area_cam
+          input_args: preset-rtsp-restream
           roles:
             - record
+            - detect
     motion:
       mask:
         - 0.365,0.055,0,0.053,0,0,0.365,0
@@ -265,24 +274,6 @@ model:
   input_pixel_format: bgr
   path: /openvino-model/ssdlite_mobilenet_v2.xml
   labelmap_path: /openvino-model/coco_91cl_bkgr.txt
-
-objects:
-  track:
-    - person
-    # - car
-
-# detectors:
-#   onnx:
-#     type: onnx
-
-# model:
-#   model_type: yolonas
-#   width: 320 # <--- should match whatever was set in notebook
-#   height: 320 # <--- should match whatever was set in notebook
-#   input_pixel_format: bgr
-#   input_tensor: nchw
-#   path: /config/yolo_nas_s.onnx
-#   labelmap_path: /labelmap/coco-80.txt
 
 version: 0.16-0
 detect:
