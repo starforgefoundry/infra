@@ -29,16 +29,16 @@ services:
 
   traefik:
     image: traefik:v3.6.1
-    command:
-      - "--providers.docker"
-      - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.websecure.address=:443"
-      - "--entrypoints.websecure.http.tls=true"
-      - "--serversTransport.insecureSkipVerify=true"
     ports:
-      - "443:443"
+      - 80:80
+      - 443:443
+    command:
+      - "--configFile=/etc/traefik/config.yml"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - /home/starforge/deploy/configs/traefik/dynamic:/dynamic
+      - /home/starforge/deploy/configs/traefik/config.yml:/etc/traefik/config.yml:ro
+      - /storage/traefik/certs:/etc/traefik/certs:ro
     networks:
       - backend
     restart: unless-stopped
