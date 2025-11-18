@@ -1,0 +1,14 @@
+- name: Deploy Docker Hosts
+  hosts: all
+  gather_facts: false
+  roles:
+    - role: bwees.deploy.deploy_host
+      vars:
+        host: "{{ inventory_hostname }}"
+        deploy_dest: "{{ deployment_location | default('/home/' + ansible_ssh_user + '/deploy') }}"
+        compose_src: "../compose/"
+        config_src: "../config/"
+        secret_src: "../secrets.resolved.yml"
+        config_mode: "single_host"
+        secret_groups:
+          - "{{ inventory_hostname }}"
