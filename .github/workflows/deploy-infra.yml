@@ -6,7 +6,6 @@ on:
       - main
   workflow_dispatch:
 
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -77,6 +76,9 @@ jobs:
           mkdir -p ~/.ssh
           op read "op://Starforge Foundry/tfsdu56w4w2l7ixjqb526uuox4/private key?ssh-format=openssh" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
+
+      - name: Install Ansible collections
+        run: just collection
 
       - name: Deploy playbook
         run: just deploy
