@@ -7,7 +7,7 @@
         host: "{{ inventory_hostname }}"
         deploy_dest: "{{ deployment_location | default('/home/' + ansible_ssh_user + '/deploy') }}"
         compose_src: "../compose/"
-        config_src: "../config/"
+        config_src: "../configs/"
         secret_src: "../secrets.resolved.yml"
         config_mode: "single_host"
         secret_groups:
