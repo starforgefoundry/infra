@@ -41,3 +41,12 @@ services:
       - "traefik.http.routers.frigate.entrypoints=websecure"
       - "traefik.http.services.frigate.loadbalancer.server.port=8971"
       - "traefik.http.services.frigate.loadbalancer.server.scheme=https"
+
+  locplace-scanner:
+    image: ghcr.io/locplace/scanner:0.3.1
+    pull_policy: always
+    restart: unless-stopped
+    environment:
+      - COORDINATOR_URL=https://loc.place
+      - WORKER_COUNT=100
+      - SCANNER_TOKEN=${LOCPLACE_SCANNER_TOKEN}
