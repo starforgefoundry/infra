@@ -46,11 +46,10 @@ services:
   traefik-forward-auth:
     image: thomseddon/traefik-forward-auth:2
     environment:
-      - PROVIDERS_OIDC_ISSUER_URL=https://starforgefoundry-0efu3o.us1.zitadel.cloud
-      - PROVIDERS_OIDC_CLIENT_ID=${ZITADEL_CLIENT_ID}
-      - PROVIDERS_OIDC_CLIENT_SECRET=${ZITADEL_CLIENT_SECRET}
-      - DEFAULT_PROVIDER=oidc
+      - PROVIDERS_GOOGLE_CLIENT_ID=${GAUTH_CLIENT_ID}
+      - PROVIDERS_GOOGLE_CLIENT_SECRET=${GAUTH_CLIENT_SECRET}
       - SECRET=${AUTH_SECRET}
+      - LOGOUT_REDIRECT=https://cam.starforgefoundry.com/
       - LIFETIME=2592000 # 30 days in seconds
     labels:
       - "traefik.enable=true"
