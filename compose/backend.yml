@@ -18,7 +18,7 @@ services:
       retries: 60
     environment:
       - TZ=America/New_York
-      - TS_EXTRA_ARGS=--reset --advertise-routes=10.0.10.0/23,10.0.20.0/24,10.0.50.0/24
+      - TS_EXTRA_ARGS=--reset --advertise-routes=10.0.10.0/23,10.0.20.0/24,10.0.50.0/24,10.0.60.0/24
       - TS_STATE_DIR=/var/lib/tailscale
     volumes:
       - /home/starforge/data/bwees-ts:/var/lib/tailscale
