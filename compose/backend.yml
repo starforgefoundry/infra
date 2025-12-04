@@ -63,9 +63,6 @@ services:
   zitadel-roles:
     image: ghcr.io/starforgefoundry/zitadel-roles:latest
     pull_policy: always
-    environment:
-      - ZITADEL_INSTANCE=https://starforgefoundry-0efu3o.us1.zitadel.cloud
-      - ZITADEL_TOKEN=${ZITADEL_API_TOKEN}
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=backend_backend"

@@ -2,7 +2,7 @@ mqtt:
   enabled: false
 
 auth:
-  enabled: False
+  enabled: false
   # session_length: 2592000 # 30 days
 
 proxy:
@@ -10,6 +10,11 @@ proxy:
   header_map:
     user: x-forwarded-user
     role: x-forwarded-groups
+  logout_url: /_oauth/logout
+
+database:
+  # The path to store the SQLite DB (default: shown below)
+  path: /db/frigate.db
 
 go2rtc:
   streams:
@@ -77,10 +82,7 @@ cameras:
       password: "{FRIGATE_TAPO_PASSWORD}"
 
     motion:
-      mask:
-        - 0.592,0.205,0.584,0.261,0.859,0.433,0.874,0.338
-        - 0.365,0.055,0,0.053,0,0,0.365,0
-
+      mask: 0.365,0.055,0,0.053,0,0,0.365,0
   couch_cam:
     enabled: true
     ffmpeg:
@@ -92,10 +94,7 @@ cameras:
             - detect
 
     motion:
-      mask:
-        - 0.592,0.205,0.584,0.261,0.859,0.433,0.874,0.338
-        - 0.365,0.055,0,0.053,0,0,0.365,0
-
+      mask: 0.365,0.055,0,0.053,0,0,0.365,0
   metalworking_storage:
     enabled: true
     ffmpeg:
@@ -106,10 +105,7 @@ cameras:
             - record
             - detect
     motion:
-      mask:
-        - 0.001,0.667,0.14,0.472,0.244,0.783,0.123,0.999,0,1
-        - 0.365,0.055,0,0.053,0,0,0.365,0
-
+      mask: 0.365,0.055,0,0.053,0,0,0.365,0
   woodworking_cam:
     enabled: true
     ffmpeg:
@@ -149,6 +145,10 @@ cameras:
       mask:
         - 0.365,0.055,0,0.053,0,0,0.365,0
 
+    objects:
+      filters:
+        person:
+          mask: 0.923,0.267,0.962,0.313,0.932,0.423,0.896,0.37
   eelab_cam:
     enabled: true
     ffmpeg:
@@ -277,7 +277,7 @@ model:
 
 version: 0.16-0
 detect:
-  enabled: true
+  enabled: false
 semantic_search:
   enabled: false
   model_size: small
@@ -288,3 +288,4 @@ lpr:
 classification:
   bird:
     enabled: false
+camera_groups: {}
