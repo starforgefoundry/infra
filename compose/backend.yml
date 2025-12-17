@@ -9,7 +9,7 @@ networks:
 
 services:
   bwees-ts:
-    image: tailscale/tailscale:v1.90.9
+    image: tailscale/tailscale:v1.92.3
     hostname: starforge-subnet-router
     healthcheck:
       test: ["CMD-SHELL", "tailscale status"]
