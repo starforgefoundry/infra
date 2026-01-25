@@ -251,8 +251,8 @@ record:
   enabled: true
   sync_recordings: true
   retain:
-    days: 30
-    mode: all
+    days: 90
+    mode: motion
   alerts:
     retain:
       days: 90
