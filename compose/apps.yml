@@ -49,7 +49,7 @@ services:
     networks:
       - backend_backend
     environment:
-      - AUTH_KEY=${BAMBU_CONNECT_API_KEY}
+      - AUTH_SECRET=${BAMBU_CONNECT_API_KEY}
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.bambu-connect.rule=Host(`bambu-connect.starforgefoundry.com`)"
