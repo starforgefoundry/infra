@@ -42,3 +42,16 @@ services:
       - "traefik.http.routers.frigate.entrypoints=websecure"
       - "traefik.http.services.frigate.loadbalancer.server.port=8971"
       - "traefik.http.services.frigate.loadbalancer.server.scheme=https"
+
+  bambu-connect:
+    image: ghcr.io/starforgefoundry/bambu-connect:0.3.1
+    restart: unless-stopped
+    networks:
+      - backend_backend
+    environment:
+      - AUTH_KEY=${BAMBU_CONNECT_API_KEY}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.bambu-connect.rule=Host(`bambu-connect.starforgefoundry.com`)"
+      - "traefik.http.routers.bambu-connect.entrypoints=websecure"
+      - "traefik.http.services.bambu-connect.loadbalancer.server.port=8000"
