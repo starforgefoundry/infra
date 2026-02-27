@@ -250,9 +250,10 @@ cameras:
 record:
   enabled: true
   sync_recordings: true
-  retain:
+  continuous:
+    days: 30
+  motion:
     days: 90
-    mode: motion
   alerts:
     retain:
       days: 90
