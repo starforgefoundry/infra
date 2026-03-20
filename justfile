@@ -4,9 +4,13 @@ deploy HOST="starforge":
     
 build-custom-images:
     @docker buildx build --push --platform linux/amd64 \
-        -f zitadel-roles/Dockerfile \
+        -f apps/zitadel-roles/Dockerfile \
         -t ghcr.io/starforgefoundry/zitadel-roles:latest \
-        -t ghcr.io/starforgefoundry/zitadel-roles:`git rev-parse --short HEAD` zitadel-roles/
+        -t ghcr.io/starforgefoundry/zitadel-roles:`git rev-parse --short HEAD` apps/zitadel-roles/
+    @docker buildx build --push --platform linux/amd64 \
+        -f apps/protect-oauth/Dockerfile \
+        -t ghcr.io/starforgefoundry/protect-oauth:latest \
+        -t ghcr.io/starforgefoundry/protect-oauth:`git rev-parse --short HEAD` apps/protect-oauth/
 
 collection:
   ansible-galaxy collection install -r ansible/requirements.yml

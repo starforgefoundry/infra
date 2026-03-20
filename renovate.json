@@ -1,36 +1,22 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended",
-    ":dependencyDashboard"
-  ],
-  "baseBranchPatterns": [
-    "main"
-  ],
+  "extends": ["config:recommended", ":dependencyDashboard"],
+  "baseBranchPatterns": ["main"],
   "docker-compose": {
-    "managerFilePatterns": [
-      "/^compose/.*\\.ya?ml$/"
-    ],
+    "managerFilePatterns": ["/^compose/.*\\.ya?ml$/"],
     "digest": {
       "enabled": false
     }
   },
-  "enabledManagers": [
-    "docker-compose"
-  ],
+  "enabledManagers": ["docker-compose"],
   "packageRules": [
     {
-      "matchUpdateTypes": [
-        "minor",
-        "patch"
-      ],
+      "matchUpdateTypes": ["minor", "patch"],
       "automerge": true
     },
     {
-      "matchPackageNames": [
-        "ghcr.io/blakeblackshear/frigate:0.16.0"
-      ],
-      "enabled": false
+      "matchPackageNames": ["ghcr.io/blakeblackshear/frigate"],
+      "automerge": false
     }
   ],
   "ignoreTests": true
