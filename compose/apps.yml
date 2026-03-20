@@ -45,7 +45,7 @@ services:
 
   protect-oauth:
     image: ghcr.io/starforgefoundry/protect-oauth:latest
-    pull: always
+    pull_policy: always
     restart: unless-stopped
     networks:
       - backend_backend
