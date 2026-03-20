@@ -154,7 +154,7 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Session error", http.StatusInternalServerError)
 		return
 	}
-	http.Redirect(w, r, oauthConfig.AuthCodeURL(state), http.StatusFound)
+	http.Redirect(w, r, oauthConfig.AuthCodeURL(state, oauth2.SetAuthURLParam("prompt", "select_account")), http.StatusFound)
 }
 
 func handleCallback(w http.ResponseWriter, r *http.Request) {
