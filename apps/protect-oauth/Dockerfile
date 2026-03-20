@@ -4,6 +4,7 @@ FROM golang:1.21-alpine AS builder
 WORKDIR /app
 COPY main.go .
 
+
 RUN go mod init app && go mod tidy && go build -o main main.go
 
 # Runner stage
