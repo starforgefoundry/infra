@@ -54,7 +54,7 @@ services:
       - GOOGLE_CLIENT_SECRET=${GAUTH_CLIENT_SECRET}
       - SESSION_SECRET=${AUTH_SECRET}
       - REDIRECT_URL=https://nvr.starforgefoundry.com/auth/callback
-      - UNIFI_HOST="https://10.0.50.244"
+      - UNIFI_HOST=https://10.0.50.244
       - UNIFI_USERNAME=${PROTECT_STAFF_USERNAME}
       - UNIFI_PASSWORD=${PROTECT_STAFF_PASSWORD}
     labels:
