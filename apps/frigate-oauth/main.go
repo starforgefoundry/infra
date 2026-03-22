@@ -47,13 +47,8 @@ func main() {
 		SameSite: http.SameSiteLaxMode,
 	}
 
-	mux := http.NewServeMux()
-	mux.HandleFunc("/_oauth/callback", handleCallback)
-	mux.HandleFunc("/_oauth/logout", handleLogout)
-	mux.HandleFunc("/", handleAuth)
-
 	log.Printf("frigate-oauth listening on :4181")
-	log.Fatal(http.ListenAndServe(":4181", mux))
+	log.Fatal(http.ListenAndServe(":4181", http.HandlerFunc(handleForwardAuth)))
 }
 
 func mustEnv(key string) string {
@@ -64,9 +59,24 @@ func mustEnv(key string) string {
 	return v
 }
 
-// handleAuth is the forwardauth endpoint. Traefik calls this on every request.
-// If the user has a valid session, return 200 with user/group headers.
-// Otherwise, redirect to Google OAuth.
+// handleForwardAuth is the single entrypoint called by Traefik's forwardauth
+// for every request. We dispatch based on X-Forwarded-Uri to handle the OAuth
+// callback and logout within the forwardauth flow itself.
+func handleForwardAuth(w http.ResponseWriter, r *http.Request) {
+	forwardedURI := r.Header.Get("X-Forwarded-Uri")
+
+	switch {
+	case strings.HasPrefix(forwardedURI, "/_oauth/callback"):
+		handleCallback(w, r, forwardedURI)
+	case strings.HasPrefix(forwardedURI, "/_oauth/logout"):
+		handleLogout(w, r)
+	default:
+		handleAuth(w, r)
+	}
+}
+
+// handleAuth checks the session. If authenticated, returns 200 with headers.
+// Otherwise, redirects to Google OAuth.
 func handleAuth(w http.ResponseWriter, r *http.Request) {
 	sess, _ := store.Get(r, sessionName)
 
@@ -77,14 +87,9 @@ func handleAuth(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Not authenticated — start OAuth flow.
-	// Save the original URL so we can redirect back after login.
 	state := randomHex(16)
 	sess.Values["oauth_state"] = state
-
-	// The X-Forwarded-* headers from Traefik tell us the original request URL.
-	origURL := buildOriginalURL(r)
-	sess.Values["redirect_url"] = origURL
+	sess.Values["redirect_url"] = buildOriginalURL(r)
 
 	if err := sess.Save(r, w); err != nil {
 		http.Error(w, "Session error", http.StatusInternalServerError)
@@ -94,17 +99,28 @@ func handleAuth(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, oauthConfig.AuthCodeURL(state, oauth2.SetAuthURLParam("prompt", "select_account")), http.StatusTemporaryRedirect)
 }
 
-func handleCallback(w http.ResponseWriter, r *http.Request) {
+// handleCallback processes the OAuth callback. The query parameters (code, state)
+// are on X-Forwarded-Uri since Traefik forwards the original URI as a header.
+func handleCallback(w http.ResponseWriter, r *http.Request, forwardedURI string) {
 	sess, _ := store.Get(r, sessionName)
 
+	// Parse query params from the forwarded URI (not r.URL, which is the
+	// forwardauth request URL).
+	parsed, err := url.Parse(forwardedURI)
+	if err != nil {
+		http.Error(w, "Bad callback URI", http.StatusBadRequest)
+		return
+	}
+	query := parsed.Query()
+
 	expectedState, _ := sess.Values["oauth_state"].(string)
-	if expectedState == "" || r.URL.Query().Get("state") != expectedState {
+	if expectedState == "" || query.Get("state") != expectedState {
 		http.Error(w, "Invalid OAuth state", http.StatusBadRequest)
 		return
 	}
 	delete(sess.Values, "oauth_state")
 
-	token, err := oauthConfig.Exchange(context.Background(), r.URL.Query().Get("code"))
+	token, err := oauthConfig.Exchange(context.Background(), query.Get("code"))
 	if err != nil {
 		log.Printf("OAuth token exchange error: %v", err)
 		http.Error(w, "Authentication failed", http.StatusInternalServerError)
@@ -147,8 +163,7 @@ func handleLogout(w http.ResponseWriter, r *http.Request) {
 	sess, _ := store.Get(r, sessionName)
 	sess.Options.MaxAge = -1
 	sess.Save(r, w)
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Logged out"))
+	http.Redirect(w, r, "/", http.StatusFound)
 }
 
 func fetchGoogleEmail(token *oauth2.Token) (string, error) {
@@ -192,9 +207,9 @@ func buildOriginalURL(r *http.Request) string {
 	}
 
 	u := &url.URL{
-		Scheme:   scheme,
-		Host:     host,
-		Path:     uri,
+		Scheme: scheme,
+		Host:   host,
+		Path:   uri,
 	}
 	return u.String()
 }
