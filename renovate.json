@@ -16,7 +16,9 @@
     },
     {
       "matchPackageNames": ["ghcr.io/blakeblackshear/frigate"],
-      "automerge": false
+      "matchUpdateTypes": ["patch"],
+      "automerge": true,
+      "automergeType": "pr"
     }
   ],
   "ignoreTests": true
