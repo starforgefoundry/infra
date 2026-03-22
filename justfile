@@ -12,7 +12,7 @@ collection:
   ansible-galaxy collection install -r ansible/requirements.yml
 
 [working-directory: 'nixos']
-switch HOST USER="bwees":
+switch HOST USER="starforge":
   nixos-rebuild switch \
     --flake .#"{{HOST}}" \
     --target-host "{{USER}}@{{HOST}}" \

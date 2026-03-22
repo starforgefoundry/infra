@@ -14,7 +14,7 @@
 
   disko.devices = {
     disk = {
-      disk1 = {
+      main = {
         device = lib.mkDefault "/dev/nvme0n1";
         type = "disk";
         content = {

@@ -8,7 +8,7 @@
     ./hardware-configuration.nix
     ./disk-config.nix
     ../../lib/base-packages.nix
-    ../../lib/bwees.nix
+    ../../lib/starforge.nix
     ../../lib/docker.nix
     ../../lib/garbage-collect.nix
     ../../lib/tailscale.nix
