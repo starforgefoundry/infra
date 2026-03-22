@@ -8,25 +8,6 @@ networks:
         - subnet: 172.40.0.0/24
 
 services:
-  bwees-ts:
-    image: tailscale/tailscale:v1.94.2
-    hostname: starforge-subnet-router
-    healthcheck:
-      test: ["CMD-SHELL", "tailscale status"]
-      interval: 1s
-      timeout: 5s
-      retries: 60
-    environment:
-      - TZ=America/New_York
-      - TS_EXTRA_ARGS=--reset --advertise-routes=10.0.10.0/23,10.0.20.0/24,10.0.50.0/24,10.0.60.0/24
-      - TS_STATE_DIR=/var/lib/tailscale
-    volumes:
-      - /home/starforge/data/bwees-ts:/var/lib/tailscale
-    cap_add:
-      - net_admin
-      - sys_module
-    restart: unless-stopped
-
   traefik:
     image: traefik:v3.6.11
     ports:
@@ -36,39 +17,27 @@ services:
       - "--configFile=/etc/traefik/config.yml"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /home/starforge/deploy/config/traefik/dynamic:/dynamic
-      - /home/starforge/deploy/config/traefik/config.yml:/etc/traefik/config.yml:ro
+      - /home/bwees/deploy/config/traefik/dynamic:/dynamic
+      - /home/bwees/deploy/config/traefik/config.yml:/etc/traefik/config.yml:ro
       - /storage/traefik/certs:/etc/traefik/certs:ro
     networks:
       - backend
     restart: unless-stopped
 
-  traefik-forward-auth:
-    image: thomseddon/traefik-forward-auth:2
-    environment:
-      - PROVIDERS_GOOGLE_CLIENT_ID=${GAUTH_CLIENT_ID}
-      - PROVIDERS_GOOGLE_CLIENT_SECRET=${GAUTH_CLIENT_SECRET}
-      - SECRET=${AUTH_SECRET}
-      - LOGOUT_REDIRECT=https://cam.starforgefoundry.com/
-      - LIFETIME=2592000 # 30 days in seconds
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.middlewares.traefik-forward-auth.forwardauth.address=http://traefik-forward-auth:4181"
-      - "traefik.http.middlewares.traefik-forward-auth.forwardauth.authResponseHeaders=X-Forwarded-User"
-      - "traefik.http.services.traefik-forward-auth.loadbalancer.server.port=4181"
-    networks:
-      - backend
-    restart: unless-stopped
-
-  zitadel-roles:
-    image: ghcr.io/starforgefoundry/zitadel-roles:latest
+  frigate-oauth:
+    image: ghcr.io/starforgefoundry/frigate-oauth:latest
     pull_policy: always
+    environment:
+      - GOOGLE_CLIENT_ID=${GAUTH_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GAUTH_CLIENT_SECRET}
+      - SESSION_SECRET=${AUTH_SECRET}
+      - CALLBACK_URL=https://cam.starforgefoundry.com/_oauth/callback
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=backend_backend"
-      - "traefik.http.middlewares.zitadel-roles.forwardauth.address=http://zitadel-roles:8000/auth"
-      - "traefik.http.middlewares.zitadel-roles.forwardauth.trustForwardHeader=true"
-      - "traefik.http.middlewares.zitadel-roles.forwardauth.authResponseHeaders=X-Forwarded-User,X-Forwarded-Groups"
+      - "traefik.http.middlewares.frigate-oauth.forwardauth.address=http://frigate-oauth:4181"
+      - "traefik.http.middlewares.frigate-oauth.forwardauth.trustForwardHeader=true"
+      - "traefik.http.middlewares.frigate-oauth.forwardauth.authResponseHeaders=X-Forwarded-User,X-Forwarded-Groups"
+      - "traefik.http.services.frigate-oauth.loadbalancer.server.port=4181"
     networks:
       - backend
     restart: unless-stopped
