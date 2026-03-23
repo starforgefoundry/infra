@@ -6,6 +6,7 @@ networks:
     ipam:
       config:
         - subnet: 172.40.0.0/24
+  traefik:
 
 services:
   traefik:
@@ -22,24 +23,17 @@ services:
       - /storage/traefik/certs:/etc/traefik/certs:ro
     networks:
       - backend
+      - traefik
     restart: unless-stopped
 
-  frigate-oauth:
-    image: ghcr.io/starforgefoundry/frigate-oauth:latest
-    pull_policy: always
+  cloudflared:
+    image: cloudflare/cloudflared:2026.3.0
+    container_name: cloudflared
+    command: tunnel --no-autoupdate run
     environment:
-      - GOOGLE_CLIENT_ID=${GAUTH_CLIENT_ID}
-      - GOOGLE_CLIENT_SECRET=${GAUTH_CLIENT_SECRET}
-      - SESSION_SECRET=${AUTH_SECRET}
-      - CALLBACK_URL=https://cam.starforgefoundry.com/_oauth/callback
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.middlewares.frigate-oauth.forwardauth.address=http://frigate-oauth:4181"
-      - "traefik.http.middlewares.frigate-oauth.forwardauth.trustForwardHeader=true"
-      - "traefik.http.middlewares.frigate-oauth.forwardauth.authResponseHeaders=X-Forwarded-User,X-Forwarded-Groups"
-      - "traefik.http.services.frigate-oauth.loadbalancer.server.port=4181"
+      - TUNNEL_TOKEN=${CF_TUNNEL_TOKEN}
     networks:
-      - backend
+      - traefik
     restart: unless-stopped
 
   beszel-agent:

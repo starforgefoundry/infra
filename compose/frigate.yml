@@ -1,4 +1,4 @@
-name: apps
+name: frigate
 
 networks:
   backend_backend:
@@ -43,15 +43,20 @@ services:
       - "traefik.http.services.frigate.loadbalancer.server.port=8971"
       - "traefik.http.services.frigate.loadbalancer.server.scheme=https"
 
-  bambu-connect:
-    image: ghcr.io/starforgefoundry/bambu-connect:0.3.5
-    restart: unless-stopped
-    networks:
-      - backend_backend
+  oauth-middleware:
+    image: ghcr.io/starforgefoundry/frigate-oauth:latest
+    pull_policy: always
     environment:
-      - AUTH_SECRET=${BAMBU_CONNECT_API_KEY}
+      - GOOGLE_CLIENT_ID=${GAUTH_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GAUTH_CLIENT_SECRET}
+      - SESSION_SECRET=${AUTH_SECRET}
+      - CALLBACK_URL=https://cam.starforgefoundry.com/_oauth/callback
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.bambu-connect.rule=Host(`bambu-connect.starforgefoundry.com`)"
-      - "traefik.http.routers.bambu-connect.entrypoints=websecure"
-      - "traefik.http.services.bambu-connect.loadbalancer.server.port=8000"
+      - "traefik.http.middlewares.frigate-oauth.forwardauth.address=http://oauth-middleware:4181"
+      - "traefik.http.middlewares.frigate-oauth.forwardauth.trustForwardHeader=true"
+      - "traefik.http.middlewares.frigate-oauth.forwardauth.authResponseHeaders=X-Forwarded-User,X-Forwarded-Groups"
+      - "traefik.http.services.frigate-oauth.loadbalancer.server.port=4181"
+    networks:
+      - backend_backend
+    restart: unless-stopped
