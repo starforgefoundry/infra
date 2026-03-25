@@ -48,4 +48,38 @@
       "moveonenospc=true"
     ];
   };
+
+  # Move old recordings from SSD to HDD nightly at 1am
+  systemd.services.migrate-recordings = {
+    description = "Migrate old recordings from SSD to HDD";
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart =
+        let
+          script = pkgs.writeShellScript "migrate-recordings" ''
+            SRC_DIR="/mnt/nvr-ssd/recordings"
+            DEST_DIR="/mnt/nvr-hdd/recordings"
+
+            ${pkgs.findutils}/bin/find "$SRC_DIR" -type f -mmin +20160 -print0 | while IFS= read -r -d "" file; do
+              rel_path="''${file#$SRC_DIR/}"
+              dest_file="$DEST_DIR/$rel_path"
+              dest_dir="$(${pkgs.coreutils}/bin/dirname "$dest_file")"
+              ${pkgs.coreutils}/bin/mkdir -p "$dest_dir"
+              ${pkgs.rsync}/bin/rsync -a --remove-source-files "$file" "$dest_file"
+            done
+
+            ${pkgs.findutils}/bin/find "$SRC_DIR" -type d -empty -delete
+          '';
+        in
+        "${script}";
+    };
+  };
+
+  systemd.timers.migrate-recordings = {
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnCalendar = "*-*-* 01:00:00";
+      Persistent = true;
+    };
+  };
 }
