@@ -1,5 +1,5 @@
 collections:
   - name: bwees.deploy
     type: git
-    source: https://github.com/starforge/deploy.git
+    source: https://github.com/bwees/deploy.git
     version: 2.0.2
