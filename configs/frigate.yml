@@ -278,7 +278,7 @@ model:
 
 version: 0.16-0
 detect:
-  enabled: false
+  enabled: true
 semantic_search:
   enabled: false
   model_size: small
@@ -286,7 +286,5 @@ face_recognition:
   enabled: false
 lpr:
   enabled: false
-classification:
-  bird:
-    enabled: false
+
 camera_groups: {}
