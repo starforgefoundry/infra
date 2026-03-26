@@ -20,8 +20,7 @@
   networking.hostName = "starforge-server";
   time.timeZone = "America/Chicago";
 
-  # Prefer IPv4 over IPv6 due to IPv6 issues with ISP
-  networking.enableIPv6 = false;
+  networking.firewall.enable = false;
 
   services.openssh.enable = true;
   services.openssh.settings.PasswordAuthentication = false;
