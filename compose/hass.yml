@@ -1,12 +1,30 @@
 name: hass
 
+networks:
+  backend_backend:
+    external: true
+
 services:
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+    volumes:
+      - /home/starforge/deploy/config/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - /storage/mosquitto/data:/mosquitto/data
+      - /storage/mosquitto/log:/mosquitto/log
+    networks:
+      - backend_backend
+
   homeassistant:
     image: ghcr.io/home-assistant/home-assistant:stable
     restart: unless-stopped
     network_mode: host
     volumes:
       - /storage/hass:/config
+      - /home/starforge/deploy/config/hass.yml:/config/configuration.yaml:ro
       - /etc/localtime:/etc/localtime:ro
       - /run/dbus:/run/dbus:ro
     devices:
