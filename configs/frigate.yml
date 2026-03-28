@@ -280,7 +280,7 @@ model:
 
 version: 0.16-0
 detect:
-  enabled: true
+  enabled: false
 semantic_search:
   enabled: false
   model_size: small
