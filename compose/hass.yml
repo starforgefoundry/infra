@@ -7,7 +7,6 @@ networks:
 services:
   mosquitto:
     image: eclipse-mosquitto:2
-    container_name: mosquitto
     restart: unless-stopped
     ports:
       - "1883:1883"
@@ -32,7 +31,6 @@ services:
 
   matter-server:
     image: ghcr.io/matter-js/python-matter-server:stable
-    container_name: matter-server
     restart: unless-stopped
     # Required for mDNS to work correctly
     network_mode: host
