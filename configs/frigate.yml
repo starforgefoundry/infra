@@ -23,7 +23,7 @@ go2rtc:
     couch_cam:
       - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.79:554/stream1
       - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.79
-    metalworking_storage:
+    worktables_cam:
       - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.144:554/stream1
       - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.144
     woodworking_cam:
@@ -32,7 +32,7 @@ go2rtc:
     garage_cam:
       - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.171:554/stream1
       - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.171
-    worktables_cam:
+    front_door_cam:
       - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.91:554/stream1
       - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.91
     eelab_cam:
@@ -47,7 +47,7 @@ go2rtc:
     welding_room_cam:
       - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.212:554/stream1
       - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.212
-    outdoor_a_cam:
+    storefront_cam:
       - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.205:554/stream1
       - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.205
     outdoor_b_cam:
@@ -97,11 +97,11 @@ cameras:
 
     motion:
       mask: 0.365,0.055,0,0.053,0,0,0.365,0
-  metalworking_storage:
+  worktables_cam:
     enabled: true
     ffmpeg:
       inputs:
-        - path: rtsp://127.0.0.1:8554/metalworking_storage
+        - path: rtsp://127.0.0.1:8554/worktables_cam
           input_args: preset-rtsp-restream
           roles:
             - record
@@ -134,11 +134,11 @@ cameras:
       mask:
         - 0.365,0.055,0,0.053,0,0,0.365,0
 
-  worktables_cam:
+  front_door_cam:
     enabled: true
     ffmpeg:
       inputs:
-        - path: rtsp://127.0.0.1:8554/worktables_cam
+        - path: rtsp://127.0.0.1:8554/front_door_cam
           input_args: preset-rtsp-restream
           roles:
             - record
@@ -203,11 +203,11 @@ cameras:
       mask:
         - 0.365,0.055,0,0.053,0,0,0.365,0
 
-  outdoor_a_cam:
+  storefront_cam:
     enabled: true
     ffmpeg:
       inputs:
-        - path: rtsp://127.0.0.1:8554/outdoor_a_cam
+        - path: rtsp://127.0.0.1:8554/storefront_cam
           input_args: preset-rtsp-restream
           roles:
             - record
@@ -220,11 +220,11 @@ cameras:
     detect:
       enabled: false
 
-  outdoor_b_cam:
+  parking_lot_cam:
     enabled: true
     ffmpeg:
       inputs:
-        - path: rtsp://127.0.0.1:8554/outdoor_b_cam
+        - path: rtsp://127.0.0.1:8554/parking_lot_cam
           input_args: preset-rtsp-restream
           roles:
             - record
