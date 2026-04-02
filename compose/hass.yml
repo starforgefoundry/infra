@@ -6,7 +6,7 @@ networks:
 
 services:
   mosquitto:
-    image: eclipse-mosquitto:2
+    image: eclipse-mosquitto:2.1.2
     restart: unless-stopped
     ports:
       - "1883:1883"
@@ -18,7 +18,7 @@ services:
       - backend_backend
 
   homeassistant:
-    image: ghcr.io/home-assistant/home-assistant:stable
+    image: ghcr.io/home-assistant/home-assistant:2026.3.4
     restart: unless-stopped
     network_mode: host
     volumes:
@@ -30,7 +30,7 @@ services:
       - /dev/ttyUSB0:/dev/ttyUSB0
 
   matter-server:
-    image: ghcr.io/matter-js/python-matter-server:stable
+    image: ghcr.io/matter-js/python-matter-server:8.1.2
     restart: unless-stopped
     # Required for mDNS to work correctly
     network_mode: host
