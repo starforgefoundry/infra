@@ -8,8 +8,8 @@
         deploy_dest: "{{ deployment_location | default('/home/' + ansible_ssh_user + '/deploy') }}"
         compose_src: "../compose/"
         config_src: "../configs/"
-        op_secret_uuid: "omv6kqilrvtke2f26vhd3efxze"
-        op_secret_vault: "a4ouya5tbljt6366xkvuwj6eiq"
+        op_secret_uuid: "m5bkirljj5u3hx7cum5aza46py"
+        op_secret_vault: "okfgvmcbdlgb5e5dltbgpz4nxe"
         config_mode: "single_host"
         secret_groups:
           - "{{ inventory_hostname }}"
