@@ -74,7 +74,7 @@ jobs:
       - name: Add SSH Key
         run: |
           mkdir -p ~/.ssh
-          op read "op://Starforge Foundry/tfsdu56w4w2l7ixjqb526uuox4/private key?ssh-format=openssh" > ~/.ssh/id_rsa
+          op read "op://Infrastructure/ktpoyi7gpepbeg63y2dcgz2ih4/private key?ssh-format=openssh" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
       - name: Install Ansible collections
