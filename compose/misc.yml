@@ -18,9 +18,9 @@ services:
       - "traefik.http.routers.bambu-connect.entrypoints=websecure"
       - "traefik.http.services.bambu-connect.loadbalancer.server.port=8000"
 
-  sf-printer-subnet-router:
+  printer-subnet-router:
     image: tailscale/tailscale:v1.94.2
-    hostname: starforge-subnet-router
+    hostname: printer-subnet-router
     healthcheck:
       test: ["CMD-SHELL", "tailscale status"]
       interval: 1s
@@ -32,6 +32,25 @@ services:
       - TS_STATE_DIR=/var/lib/tailscale
     volumes:
       - /storage/printer-sr:/var/lib/tailscale
+    cap_add:
+      - net_admin
+      - sys_module
+    restart: unless-stopped
+
+  bwees-subnet-router:
+    image: tailscale/tailscale:v1.94.2
+    hostname: sf-subnet-router
+    healthcheck:
+      test: ["CMD-SHELL", "tailscale status"]
+      interval: 1s
+      timeout: 5s
+      retries: 60
+    environment:
+      - TZ=America/Chicago
+      - TS_EXTRA_ARGS=--reset --advertise-routes=10.0.60.0/24
+      - TS_STATE_DIR=/var/lib/tailscale
+    volumes:
+      - /storage/bwees-sr:/var/lib/tailscale
     cap_add:
       - net_admin
       - sys_module
