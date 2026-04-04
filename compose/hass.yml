@@ -26,8 +26,6 @@ services:
       - /home/starforge/deploy/config/hass.yml:/config/configuration.yaml:ro
       - /etc/localtime:/etc/localtime:ro
       - /run/dbus:/run/dbus:ro
-    devices:
-      - /dev/ttyUSB0:/dev/ttyUSB0
 
   matter-server:
     image: ghcr.io/matter-js/python-matter-server:8.1.2
