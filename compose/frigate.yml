@@ -29,7 +29,7 @@ services:
       - FRIGATE_TAPO_PASSWORD=${FRIGATE_TAPO_PASSWORD}
       - FRIGATE_TAPO_CLOUD_PASSWORD=${FRIGATE_TAPO_CLOUD_PASSWORD}
     ports:
-      - "100.93.153.81:5000:5000" # Internal unauthenticated access. Expose carefully.
+      - "100.121.137.68:5000:5000" # Internal unauthenticated access. Expose carefully.
       - "8554:8554" # RTSP feeds
       - "8555:8555/tcp" # WebRTC over tcp
       - "8555:8555/udp" # WebRTC over udp
