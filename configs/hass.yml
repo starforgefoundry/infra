@@ -16,3 +16,13 @@ script: !include scripts.yaml
 scene: !include scenes.yaml
 
 zha_toolkit:
+
+openid:
+  client_id: !env_var GAUTH_CLIENT_ID
+  client_secret: !env_var GAUTH_CLIENT_SECRET
+  configure_url: "https://accounts.google.com/.well-known/openid-configuration"
+  username_field: "email"
+  scope: "openid profile email"
+  block_login: true
+  openid_text: "Login with Starforge Google" # Text to display on the login page
+  create_user: true

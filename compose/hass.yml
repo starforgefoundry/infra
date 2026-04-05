@@ -21,6 +21,10 @@ services:
     image: ghcr.io/home-assistant/home-assistant:2026.4.1
     restart: unless-stopped
     network_mode: host
+    environment:
+      - TZ=America/Chicago
+      - GAUTH_CLIENT_ID=${GAUTH_CLIENT_ID}
+      - GAUTH_CLIENT_SECRET=${GAUTH_CLIENT_SECRET}
     volumes:
       - /storage/hass:/config
       - /home/starforge/deploy/config/hass.yml:/config/configuration.yaml:ro
