@@ -25,6 +25,8 @@ services:
       - TZ=America/Chicago
       - GAUTH_CLIENT_ID=${GAUTH_CLIENT_ID}
       - GAUTH_CLIENT_SECRET=${GAUTH_CLIENT_SECRET}
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0
     volumes:
       - /storage/hass:/config
       - /home/starforge/deploy/config/hass.yml:/config/configuration.yaml:ro
