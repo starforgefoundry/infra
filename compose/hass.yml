@@ -48,3 +48,13 @@ services:
       - /run/dbus:/run/dbus:ro
     # If you adjust command line, make sure to pass the default CMD arguments too:
     #command: --storage-path /data --paa-root-cert-dir /data/credentials --bluetooth-adapter 0
+
+  zigbee2mqtt:
+    image: ghcr.io/koenkk/zigbee2mqtt
+    restart: unless-stopped
+    volumes:
+      - /storage/z2m/data:/app/data
+      - /run/udev:/run/udev:ro
+    ports:
+      # Frontend port
+      - 8080:8080
