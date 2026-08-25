@@ -25,8 +25,8 @@ services:
       - TZ=America/Chicago
       - GAUTH_CLIENT_ID=${GAUTH_CLIENT_ID}
       - GAUTH_CLIENT_SECRET=${GAUTH_CLIENT_SECRET}
-    devices:
-      - /dev/ttyUSB0:/dev/ttyUSB0
+    # devices:
+    #   - /dev/ttyUSB0:/dev/ttyUSB0
     volumes:
       - /storage/hass:/config
       - /home/starforge/deploy/config/hass.yml:/config/configuration.yaml:ro
@@ -48,13 +48,3 @@ services:
       - /run/dbus:/run/dbus:ro
     # If you adjust command line, make sure to pass the default CMD arguments too:
     #command: --storage-path /data --paa-root-cert-dir /data/credentials --bluetooth-adapter 0
-
-  zigbee2mqtt:
-    image: ghcr.io/koenkk/zigbee2mqtt
-    restart: unless-stopped
-    volumes:
-      - /storage/z2m/data:/app/data
-      - /run/udev:/run/udev:ro
-    ports:
-      # Frontend port
-      - 8080:8080
