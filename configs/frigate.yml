@@ -35,12 +35,12 @@ go2rtc:
     front_door_cam:
       - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.91:554/stream1
       - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.91
-    eelab_cam:
-      - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.95:554/stream1
-      - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.95
-    print_room_cam:
-      - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.89:554/stream1
-      - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.89
+    # eelab_cam:
+    #   - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.95:554/stream1
+    #   - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.95
+    # print_room_cam:
+    #   - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.89:554/stream1
+    #   - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.89
     storage_hallway_cam:
       - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.97:554/stream1
       - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.97
@@ -50,15 +50,51 @@ go2rtc:
     storefront_cam:
       - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.205:554/stream1
       - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.205
-    parking_lot_cam:
-      - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.147:554/stream1
-      - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.147
+    # parking_lot_cam:
+    #   - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.147:554/stream1
+    #   - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.147
     machining_area_cam:
       - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.149:554/stream1
       - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.149
-    back_alley_cam:
-      - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.219:554/stream1
-      - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.219
+    # back_alley_cam:
+    #   - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.219:554/stream1
+    #   - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.219
+
+    # ---- Hiseeu wireless NVR @ 10.0.50.146 ----
+    # chN_M.264 -> N = channel number - 1 (zero based), M = 0 main / 1 sub
+    # Note port 80, not 554.
+    wireless_nvr_0:
+      - rtsp://admin:password@10.0.50.146:80/ch0_0.264
+    wireless_nvr_0_sub:
+      - rtsp://admin:password@10.0.50.146:80/ch0_1.264
+    wireless_nvr_1:
+      - rtsp://admin:password@10.0.50.146:80/ch1_0.264
+    wireless_nvr_1_sub:
+      - rtsp://admin:password@10.0.50.146:80/ch1_1.264
+    wireless_nvr_2:
+      - rtsp://admin:password@10.0.50.146:80/ch2_0.264
+    wireless_nvr_2_sub:
+      - rtsp://admin:password@10.0.50.146:80/ch2_1.264
+    # wireless_nvr_3:
+    #   - rtsp://admin:password@10.0.50.146:80/ch3_0.264
+    # wireless_nvr_3_sub:
+    #   - rtsp://admin:password@10.0.50.146:80/ch3_1.264
+    wireless_nvr_4:
+      - rtsp://admin:password@10.0.50.146:80/ch4_0.264
+    wireless_nvr_4_sub:
+      - rtsp://admin:password@10.0.50.146:80/ch4_1.264
+    wireless_nvr_5:
+      - rtsp://admin:password@10.0.50.146:80/ch5_0.264
+    wireless_nvr_5_sub:
+      - rtsp://admin:password@10.0.50.146:80/ch5_1.264
+    wireless_nvr_6:
+      - rtsp://admin:password@10.0.50.146:80/ch6_0.264
+    wireless_nvr_6_sub:
+      - rtsp://admin:password@10.0.50.146:80/ch6_1.264
+    wireless_nvr_7:
+      - rtsp://admin:password@10.0.50.146:80/ch7_0.264
+    wireless_nvr_7_sub:
+      - rtsp://admin:password@10.0.50.146:80/ch7_1.264
 
   webrtc:
     candidates:
@@ -67,24 +103,24 @@ go2rtc:
       - stun:8555
 
 cameras:
-  back_alley_cam:
-    enabled: true
-    ffmpeg:
-      inputs:
-        - path: rtsp://127.0.0.1:8554/back_alley_cam
-          input_args: preset-rtsp-restream
-          roles:
-            - record
-            - detect
+  # back_alley_cam:
+  #   enabled: true
+  #   ffmpeg:
+  #     inputs:
+  #       - path: rtsp://127.0.0.1:8554/back_alley_cam
+  #         input_args: preset-rtsp-restream
+  #         roles:
+  #           - record
+  #           - detect
 
-    onvif:
-      host: 10.0.50.219
-      port: 2020
-      user: starforge
-      password: "{FRIGATE_TAPO_PASSWORD}"
+  # onvif:
+  #   host: 10.0.50.219
+  #   port: 2020
+  #   user: starforge
+  #   password: '{FRIGATE_TAPO_PASSWORD}'
 
-    motion:
-      mask: 0.365,0.055,0,0.053,0,0,0.365,0
+  # motion:
+  #   mask: 0.365,0.055,0,0.053,0,0,0.365,0
   couch_cam:
     enabled: true
     ffmpeg:
@@ -151,31 +187,31 @@ cameras:
       filters:
         person:
           mask: 0.923,0.267,0.962,0.313,0.932,0.423,0.896,0.37
-  eelab_cam:
-    enabled: true
-    ffmpeg:
-      inputs:
-        - path: rtsp://127.0.0.1:8554/eelab_cam
-          input_args: preset-rtsp-restream
-          roles:
-            - record
-            - detect
-    motion:
-      mask:
-        - 0.365,0.055,0,0.053,0,0,0.365,0
+  # eelab_cam:
+  #   enabled: true
+  #   ffmpeg:
+  #     inputs:
+  #       - path: rtsp://127.0.0.1:8554/eelab_cam
+  #         input_args: preset-rtsp-restream
+  #         roles:
+  #           - record
+  #           - detect
+  #   motion:
+  #     mask:
+  #       - 0.365,0.055,0,0.053,0,0,0.365,0
 
-  print_room_cam:
-    enabled: true
-    ffmpeg:
-      inputs:
-        - path: rtsp://127.0.0.1:8554/print_room_cam
-          input_args: preset-rtsp-restream
-          roles:
-            - record
-            - detect
-    motion:
-      mask:
-        - 0.365,0.055,0,0.053,0,0,0.365,0
+  # print_room_cam:
+  #   enabled: true
+  #   ffmpeg:
+  #     inputs:
+  #       - path: rtsp://127.0.0.1:8554/print_room_cam
+  #         input_args: preset-rtsp-restream
+  #         roles:
+  #           - record
+  #           - detect
+  #   motion:
+  #     mask:
+  #       - 0.365,0.055,0,0.053,0,0,0.365,0
 
   storage_hallway_cam:
     enabled: true
@@ -220,21 +256,21 @@ cameras:
     detect:
       enabled: false
 
-  parking_lot_cam:
-    enabled: true
-    ffmpeg:
-      inputs:
-        - path: rtsp://127.0.0.1:8554/parking_lot_cam
-          input_args: preset-rtsp-restream
-          roles:
-            - record
-            - detect
+  # parking_lot_cam:
+  #   enabled: true
+  #   ffmpeg:
+  #     inputs:
+  #       - path: rtsp://127.0.0.1:8554/parking_lot_cam
+  #         input_args: preset-rtsp-restream
+  #         roles:
+  #           - record
+  #           - detect
 
-    motion:
-      mask: 0.365,0.055,0,0.053,0,0,0.365,0
+  #   motion:
+  #     mask: 0.365,0.055,0,0.053,0,0,0.365,0
 
-    detect:
-      enabled: false
+  #   detect:
+  #     enabled: false
 
   machining_area_cam:
     enabled: true
@@ -247,7 +283,145 @@ cameras:
             - detect
     motion:
       mask:
-        - 0.365,0.055,0,0.053,0,0,0.365,0
+        - 0.365,0.055,0,0.003,0,0,0.365,0
+
+  # ---- Hiseeu wireless NVR channels ----
+
+  wireless_nvr_0:
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://127.0.0.1:8554/wireless_nvr_0_sub
+          input_args: preset-rtsp-restream
+          roles:
+            - detect
+        - path: rtsp://127.0.0.1:8554/wireless_nvr_0
+          input_args: preset-rtsp-restream
+          roles:
+            - record
+    live:
+      streams:
+        Main: wireless_nvr_0
+        Sub: wireless_nvr_0_sub
+
+  wireless_nvr_1:
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://127.0.0.1:8554/wireless_nvr_1_sub
+          input_args: preset-rtsp-restream
+          roles:
+            - detect
+        - path: rtsp://127.0.0.1:8554/wireless_nvr_1
+          input_args: preset-rtsp-restream
+          roles:
+            - record
+    live:
+      streams:
+        Main: wireless_nvr_1
+        Sub: wireless_nvr_1_sub
+
+  wireless_nvr_2:
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://127.0.0.1:8554/wireless_nvr_2_sub
+          input_args: preset-rtsp-restream
+          roles:
+            - detect
+        - path: rtsp://127.0.0.1:8554/wireless_nvr_2
+          input_args: preset-rtsp-restream
+          roles:
+            - record
+    live:
+      streams:
+        Main: wireless_nvr_2
+        Sub: wireless_nvr_2_sub
+
+  # wireless_nvr_3:
+  #   enabled: true
+  #   ffmpeg:
+  #     inputs:
+  #       - path: rtsp://127.0.0.1:8554/wireless_nvr_3_sub
+  #         input_args: preset-rtsp-restream
+  #         roles:
+  #           - detect
+  #       - path: rtsp://127.0.0.1:8554/wireless_nvr_3
+  #         input_args: preset-rtsp-restream
+  #         roles:
+  #           - record
+  #   live:
+  #     streams:
+  #       Main: wireless_nvr_3
+  #       Sub: wireless_nvr_3_sub
+
+  wireless_nvr_4:
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://127.0.0.1:8554/wireless_nvr_4_sub
+          input_args: preset-rtsp-restream
+          roles:
+            - detect
+        - path: rtsp://127.0.0.1:8554/wireless_nvr_4
+          input_args: preset-rtsp-restream
+          roles:
+            - record
+    live:
+      streams:
+        Main: wireless_nvr_4
+        Sub: wireless_nvr_4_sub
+
+  wireless_nvr_5:
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://127.0.0.1:8554/wireless_nvr_5_sub
+          input_args: preset-rtsp-restream
+          roles:
+            - detect
+        - path: rtsp://127.0.0.1:8554/wireless_nvr_5
+          input_args: preset-rtsp-restream
+          roles:
+            - record
+    live:
+      streams:
+        Main: wireless_nvr_5
+        Sub: wireless_nvr_5_sub
+
+  wireless_nvr_6:
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://127.0.0.1:8554/wireless_nvr_6_sub
+          input_args: preset-rtsp-restream
+          roles:
+            - detect
+        - path: rtsp://127.0.0.1:8554/wireless_nvr_6
+          input_args: preset-rtsp-restream
+          roles:
+            - record
+    live:
+      streams:
+        Main: wireless_nvr_6
+        Sub: wireless_nvr_6_sub
+
+  wireless_nvr_7:
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://127.0.0.1:8554/wireless_nvr_7_sub
+          input_args: preset-rtsp-restream
+          roles:
+            - detect
+        - path: rtsp://127.0.0.1:8554/wireless_nvr_7
+          input_args: preset-rtsp-restream
+          roles:
+            - record
+    live:
+      streams:
+        Main: wireless_nvr_7
+        Sub: wireless_nvr_7_sub
 
 record:
   enabled: true
@@ -278,7 +452,7 @@ model:
   path: /openvino-model/ssdlite_mobilenet_v2.xml
   labelmap_path: /openvino-model/coco_91cl_bkgr.txt
 
-version: 0.16-0
+version: 0.17-0
 detect:
   enabled: true
   fps: 1
