@@ -60,41 +60,41 @@ go2rtc:
     #   - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.219:554/stream1
     #   - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.219
 
-    # ---- Hiseeu wireless NVR @ 10.0.50.146 ----
+    # ---- Hiseeu wireless NVR @ 10.0.50.148 ----
     # chN_M.264 -> N = channel number - 1 (zero based), M = 0 main / 1 sub
     # Note port 80, not 554.
     wireless_nvr_0:
-      - rtsp://admin:password@10.0.50.146:80/ch0_0.264
+      - rtsp://admin:password@10.0.50.148:80/ch0_0.264
     wireless_nvr_0_sub:
-      - rtsp://admin:password@10.0.50.146:80/ch0_1.264
+      - rtsp://admin:password@10.0.50.148:80/ch0_1.264
     wireless_nvr_1:
-      - rtsp://admin:password@10.0.50.146:80/ch1_0.264
+      - rtsp://admin:password@10.0.50.148:80/ch1_0.264
     wireless_nvr_1_sub:
-      - rtsp://admin:password@10.0.50.146:80/ch1_1.264
+      - rtsp://admin:password@10.0.50.148:80/ch1_1.264
     wireless_nvr_2:
-      - rtsp://admin:password@10.0.50.146:80/ch2_0.264
+      - rtsp://admin:password@10.0.50.148:80/ch2_0.264
     wireless_nvr_2_sub:
-      - rtsp://admin:password@10.0.50.146:80/ch2_1.264
+      - rtsp://admin:password@10.0.50.148:80/ch2_1.264
     # wireless_nvr_3:
-    #   - rtsp://admin:password@10.0.50.146:80/ch3_0.264
+    #   - rtsp://admin:password@10.0.50.148:80/ch3_0.264
     # wireless_nvr_3_sub:
-    #   - rtsp://admin:password@10.0.50.146:80/ch3_1.264
+    #   - rtsp://admin:password@10.0.50.148:80/ch3_1.264
     wireless_nvr_4:
-      - rtsp://admin:password@10.0.50.146:80/ch4_0.264
+      - rtsp://admin:password@10.0.50.148:80/ch4_0.264
     wireless_nvr_4_sub:
-      - rtsp://admin:password@10.0.50.146:80/ch4_1.264
+      - rtsp://admin:password@10.0.50.148:80/ch4_1.264
     wireless_nvr_5:
-      - rtsp://admin:password@10.0.50.146:80/ch5_0.264
+      - rtsp://admin:password@10.0.50.148:80/ch5_0.264
     wireless_nvr_5_sub:
-      - rtsp://admin:password@10.0.50.146:80/ch5_1.264
+      - rtsp://admin:password@10.0.50.148:80/ch5_1.264
     wireless_nvr_6:
-      - rtsp://admin:password@10.0.50.146:80/ch6_0.264
+      - rtsp://admin:password@10.0.50.148:80/ch6_0.264
     wireless_nvr_6_sub:
-      - rtsp://admin:password@10.0.50.146:80/ch6_1.264
+      - rtsp://admin:password@10.0.50.148:80/ch6_1.264
     wireless_nvr_7:
-      - rtsp://admin:password@10.0.50.146:80/ch7_0.264
+      - rtsp://admin:password@10.0.50.148:80/ch7_0.264
     wireless_nvr_7_sub:
-      - rtsp://admin:password@10.0.50.146:80/ch7_1.264
+      - rtsp://admin:password@10.0.50.148:80/ch7_1.264
 
   webrtc:
     candidates:
