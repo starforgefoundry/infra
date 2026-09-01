@@ -455,7 +455,7 @@ model:
 version: 0.17-0
 detect:
   enabled: true
-  fps: 0.5
+  fps: 1
 semantic_search:
   enabled: false
   model_size: small
