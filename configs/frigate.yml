@@ -35,9 +35,9 @@ go2rtc:
     front_door_cam:
       - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.91:554/stream1
       - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.91
-    # eelab_cam:
-    #   - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.95:554/stream1
-    #   - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.95
+    eelab_cam:
+      - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.95:554/stream1
+      - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.95
     # print_room_cam:
     #   - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.89:554/stream1
     #   - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.89
@@ -187,18 +187,18 @@ cameras:
       filters:
         person:
           mask: 0.923,0.267,0.962,0.313,0.932,0.423,0.896,0.37
-  # eelab_cam:
-  #   enabled: true
-  #   ffmpeg:
-  #     inputs:
-  #       - path: rtsp://127.0.0.1:8554/eelab_cam
-  #         input_args: preset-rtsp-restream
-  #         roles:
-  #           - record
-  #           - detect
-  #   motion:
-  #     mask:
-  #       - 0.365,0.055,0,0.053,0,0,0.365,0
+  eelab_cam:
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://127.0.0.1:8554/eelab_cam
+          input_args: preset-rtsp-restream
+          roles:
+            - record
+            - detect
+    motion:
+      mask:
+        - 0.365,0.055,0,0.053,0,0,0.365,0
 
   # print_room_cam:
   #   enabled: true

@@ -18,7 +18,7 @@ services:
       - /dev/dri/renderD128:/dev/dri/renderD128 # For intel hwaccel, needs to be updated for your hardware
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - /home/starforge/deploy/config/frigate.yml:/config/config.yml:ro
+      - /home/starforge/deploy/config/frigate.yml:/config/config.yml
       - /storage/frigate:/db
       - /mnt/nvr-storage/frigate:/media/frigate
       - type: tmpfs # Optional: 1GB of memory, reduces SSD/SD Card wear
