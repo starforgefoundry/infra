@@ -464,4 +464,13 @@ face_recognition:
 lpr:
   enabled: false
 
-camera_groups: {}
+camera_groups:
+  TV:
+    order: 1
+    icon: LuAirplay
+    cameras:
+      - garage_cam
+      - machining_area_cam
+      - wireless_nvr_6
+      - welding_room_cam
+      - wireless_nvr_4
