@@ -280,7 +280,11 @@ cameras:
             - detect
 
     motion:
-      mask: 0.365,0.055,0,0.053,0,0,0.365,0
+      mask:
+        motion_mask_1:
+          friendly_name: Motion Mask 1
+          enabled: true
+          coordinates: 0.365,0.055,0,0.053,0,0,0.365,0
 
     detect:
       enabled: false
