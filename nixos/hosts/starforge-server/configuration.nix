@@ -22,6 +22,27 @@
 
   networking.firewall.enable = false;
 
+  # Bambuddy's virtual printers each need their own IP on the printer VLAN, and
+  # SSDP discovery only reaches slicers that share the broadcast domain.
+  networking.vlans.printers = {
+    id = 60;
+    interface = "enp0s31f6";
+  };
+
+  networking.interfaces.printers = {
+    useDHCP = false;
+    ipv4.addresses = [
+      {
+        address = "10.0.60.201";
+        prefixLength = 24;
+      }
+      {
+        address = "10.0.60.202";
+        prefixLength = 24;
+      }
+    ];
+  };
+
   services.openssh.enable = true;
   services.openssh.settings.PasswordAuthentication = false;
 
