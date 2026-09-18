@@ -50,9 +50,9 @@ go2rtc:
     storefront_cam:
       - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.205:554/stream1
       - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.205
-    # parking_lot_cam:
-    #   - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.147:554/stream1
-    #   - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.147
+    parking_lot_cam:
+      - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.147:554/stream1
+      - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.147
     machining_area_cam:
       - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.149:554/stream1
       - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.149
@@ -132,7 +132,11 @@ cameras:
             - detect
 
     motion:
-      mask: 0.365,0.055,0,0.053,0,0,0.365,0
+      mask:
+        motion_mask_1:
+          friendly_name: Motion Mask 1
+          enabled: true
+          coordinates: 0.365,0.055,0,0.053,0,0,0.365,0
   worktables_cam:
     enabled: true
     ffmpeg:
@@ -143,7 +147,11 @@ cameras:
             - record
             - detect
     motion:
-      mask: 0.365,0.055,0,0.053,0,0,0.365,0
+      mask:
+        motion_mask_1:
+          friendly_name: Motion Mask 1
+          enabled: true
+          coordinates: 0.365,0.055,0,0.053,0,0,0.365,0
   woodworking_cam:
     enabled: true
     ffmpeg:
@@ -155,8 +163,10 @@ cameras:
             - detect
     motion:
       mask:
-        - 0.365,0.055,0,0.053,0,0,0.365,0
-
+        motion_mask_1:
+          friendly_name: Motion Mask 1
+          enabled: true
+          coordinates: 0.365,0.055,0,0.053,0,0,0.365,0
   garage_cam:
     enabled: true
     ffmpeg:
@@ -168,8 +178,10 @@ cameras:
             - detect
     motion:
       mask:
-        - 0.365,0.055,0,0.053,0,0,0.365,0
-
+        motion_mask_1:
+          friendly_name: Motion Mask 1
+          enabled: true
+          coordinates: 0.365,0.055,0,0.053,0,0,0.365,0
   front_door_cam:
     enabled: true
     ffmpeg:
@@ -181,12 +193,18 @@ cameras:
             - detect
     motion:
       mask:
-        - 0.365,0.055,0,0.053,0,0,0.365,0
-
+        motion_mask_1:
+          friendly_name: Motion Mask 1
+          enabled: true
+          coordinates: 0.365,0.055,0,0.053,0,0,0.365,0
     objects:
       filters:
         person:
-          mask: 0.923,0.267,0.962,0.313,0.932,0.423,0.896,0.37
+          mask:
+            object_mask_1:
+              friendly_name: Object Mask 1 (person)
+              enabled: true
+              coordinates: 0.923,0.267,0.962,0.313,0.932,0.423,0.896,0.37
   eelab_cam:
     enabled: true
     ffmpeg:
@@ -198,21 +216,10 @@ cameras:
             - detect
     motion:
       mask:
-        - 0.365,0.055,0,0.053,0,0,0.365,0
-
-  # print_room_cam:
-  #   enabled: true
-  #   ffmpeg:
-  #     inputs:
-  #       - path: rtsp://127.0.0.1:8554/print_room_cam
-  #         input_args: preset-rtsp-restream
-  #         roles:
-  #           - record
-  #           - detect
-  #   motion:
-  #     mask:
-  #       - 0.365,0.055,0,0.053,0,0,0.365,0
-
+        motion_mask_1:
+          friendly_name: Motion Mask 1
+          enabled: true
+          coordinates: 0.365,0.055,0,0.053,0,0,0.365,0
   storage_hallway_cam:
     enabled: true
     ffmpeg:
@@ -224,8 +231,10 @@ cameras:
             - detect
     motion:
       mask:
-        - 0.365,0.055,0,0.053,0,0,0.365,0
-
+        motion_mask_1:
+          friendly_name: Motion Mask 1
+          enabled: true
+          coordinates: 0.365,0.055,0,0.053,0,0,0.365,0
   welding_room_cam:
     enabled: true
     ffmpeg:
@@ -237,8 +246,10 @@ cameras:
             - detect
     motion:
       mask:
-        - 0.365,0.055,0,0.053,0,0,0.365,0
-
+        motion_mask_1:
+          friendly_name: Motion Mask 1
+          enabled: true
+          coordinates: 0.365,0.055,0,0.053,0,0,0.365,0
   storefront_cam:
     enabled: true
     ffmpeg:
@@ -251,26 +262,28 @@ cameras:
 
     motion:
       mask:
-        - 0.365,0.055,0,0.053,0,0,0.365,0
-
+        motion_mask_1:
+          friendly_name: Motion Mask 1
+          enabled: true
+          coordinates: 0.365,0.055,0,0.053,0,0,0.365,0
     detect:
       enabled: false
 
-  # parking_lot_cam:
-  #   enabled: true
-  #   ffmpeg:
-  #     inputs:
-  #       - path: rtsp://127.0.0.1:8554/parking_lot_cam
-  #         input_args: preset-rtsp-restream
-  #         roles:
-  #           - record
-  #           - detect
+  parking_lot_cam:
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://127.0.0.1:8554/parking_lot_cam
+          input_args: preset-rtsp-restream
+          roles:
+            - record
+            - detect
 
-  #   motion:
-  #     mask: 0.365,0.055,0,0.053,0,0,0.365,0
+    motion:
+      mask: 0.365,0.055,0,0.053,0,0,0.365,0
 
-  #   detect:
-  #     enabled: false
+    detect:
+      enabled: false
 
   machining_area_cam:
     enabled: true
@@ -283,21 +296,18 @@ cameras:
             - detect
     motion:
       mask:
-        - 0.365,0.055,0,0.003,0,0,0.365,0
-
-  # ---- Hiseeu wireless NVR channels ----
-
+        motion_mask_1:
+          friendly_name: Motion Mask 1
+          enabled: true
+          coordinates: 0.365,0.055,0,0.003,0,0,0.365,0
   wireless_nvr_0:
     enabled: true
     ffmpeg:
       inputs:
-        - path: rtsp://127.0.0.1:8554/wireless_nvr_0_sub
-          input_args: preset-rtsp-restream
-          roles:
-            - detect
         - path: rtsp://127.0.0.1:8554/wireless_nvr_0
           input_args: preset-rtsp-restream
           roles:
+            - detect
             - record
     live:
       streams:
@@ -308,13 +318,10 @@ cameras:
     enabled: true
     ffmpeg:
       inputs:
-        - path: rtsp://127.0.0.1:8554/wireless_nvr_1_sub
-          input_args: preset-rtsp-restream
-          roles:
-            - detect
         - path: rtsp://127.0.0.1:8554/wireless_nvr_1
           input_args: preset-rtsp-restream
           roles:
+            - detect
             - record
     live:
       streams:
@@ -325,13 +332,10 @@ cameras:
     enabled: true
     ffmpeg:
       inputs:
-        - path: rtsp://127.0.0.1:8554/wireless_nvr_2_sub
-          input_args: preset-rtsp-restream
-          roles:
-            - detect
         - path: rtsp://127.0.0.1:8554/wireless_nvr_2
           input_args: preset-rtsp-restream
           roles:
+            - detect
             - record
     live:
       streams:
@@ -359,13 +363,10 @@ cameras:
     enabled: true
     ffmpeg:
       inputs:
-        - path: rtsp://127.0.0.1:8554/wireless_nvr_4_sub
-          input_args: preset-rtsp-restream
-          roles:
-            - detect
         - path: rtsp://127.0.0.1:8554/wireless_nvr_4
           input_args: preset-rtsp-restream
           roles:
+            - detect
             - record
     live:
       streams:
@@ -376,13 +377,10 @@ cameras:
     enabled: true
     ffmpeg:
       inputs:
-        - path: rtsp://127.0.0.1:8554/wireless_nvr_5_sub
-          input_args: preset-rtsp-restream
-          roles:
-            - detect
         - path: rtsp://127.0.0.1:8554/wireless_nvr_5
           input_args: preset-rtsp-restream
           roles:
+            - detect
             - record
     live:
       streams:
@@ -393,13 +391,10 @@ cameras:
     enabled: true
     ffmpeg:
       inputs:
-        - path: rtsp://127.0.0.1:8554/wireless_nvr_6_sub
-          input_args: preset-rtsp-restream
-          roles:
-            - detect
         - path: rtsp://127.0.0.1:8554/wireless_nvr_6
           input_args: preset-rtsp-restream
           roles:
+            - detect
             - record
     live:
       streams:
@@ -410,13 +405,10 @@ cameras:
     enabled: true
     ffmpeg:
       inputs:
-        - path: rtsp://127.0.0.1:8554/wireless_nvr_7_sub
-          input_args: preset-rtsp-restream
-          roles:
-            - detect
         - path: rtsp://127.0.0.1:8554/wireless_nvr_7
           input_args: preset-rtsp-restream
           roles:
+            - detect
             - record
     live:
       streams:
@@ -425,7 +417,6 @@ cameras:
 
 record:
   enabled: true
-  sync_recordings: true
   continuous:
     days: 30
   motion:
@@ -452,7 +443,7 @@ model:
   path: /openvino-model/ssdlite_mobilenet_v2.xml
   labelmap_path: /openvino-model/coco_91cl_bkgr.txt
 
-version: 0.17-0
+version: 0.18-0
 detect:
   enabled: true
   fps: 1
