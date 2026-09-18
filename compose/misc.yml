@@ -57,7 +57,7 @@ services:
     restart: unless-stopped
 
   bambuddy:
-    image: ghcr.io/maziggy/bambuddy:1.2.5.5
+    image: ghcr.io/starforgefoundry/bambuddy:1.2.5.5.1
     # Host network so the printers on the shop LAN show up in discovery and camera streams connect
     network_mode: host
     environment:
