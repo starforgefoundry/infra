@@ -24,8 +24,9 @@
 
   # Bambuddy's virtual printers each need their own IP on the printer VLAN, and
   # SSDP discovery only reaches slicers that share the broadcast domain.
+  # VLAN 4 carries 10.0.60.0/24 — the tag does not track the subnet here.
   networking.vlans.printers = {
-    id = 60;
+    id = 4;
     interface = "enp0s31f6";
   };
 
