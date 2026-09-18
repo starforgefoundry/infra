@@ -301,7 +301,6 @@ cameras:
     live:
       streams:
         Main: dumpster_cam
-        Sub: dumpster_cam_sub
 
   storefront_garage_cam:
     enabled: true
@@ -315,7 +314,6 @@ cameras:
     live:
       streams:
         Main: storefront_garage_cam
-        Sub: storefront_garage_cam_sub
 
   building_side_cam:
     enabled: true
@@ -329,7 +327,6 @@ cameras:
     live:
       streams:
         Main: building_side_cam
-        Sub: building_side_cam_sub
 
   # wireless_nvr_3:
   #   enabled: true
@@ -360,7 +357,6 @@ cameras:
     live:
       streams:
         Main: back_pad_cam
-        Sub: back_pad_cam_sub
 
   side_pad_cam:
     enabled: true
@@ -374,7 +370,6 @@ cameras:
     live:
       streams:
         Main: side_pad_cam
-        Sub: side_pad_cam_sub
 
   shop_cam:
     enabled: true
@@ -388,7 +383,6 @@ cameras:
     live:
       streams:
         Main: shop_cam
-        Sub: shop_cam_sub
 
   treeline_camera:
     enabled: true
@@ -402,8 +396,6 @@ cameras:
     live:
       streams:
         Main: treeline_camera
-        Sub: treeline_camera_sub
-
 record:
   enabled: true
   continuous:
