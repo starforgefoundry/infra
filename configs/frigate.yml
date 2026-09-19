@@ -18,44 +18,70 @@ database:
   # The path to store the SQLite DB (default: shown below)
   path: /db/frigate.db
 
+# Every camera publishes a main stream for recording and a _sub stream for
+# detection. Frigate sizes its decode, motion and shm work off whatever the
+# detect stream's native resolution is, so pointing detect at the main stream
+# makes it decode 1080p/5MP frames to find a person-sized blob.
 go2rtc:
   streams:
     lobby_worktables_cam:
       - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.79:554/stream1
       - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.79
+    lobby_worktables_cam_sub:
+      - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.79:554/stream2
     eelab_cam:
       - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.144:554/stream1
       - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.144
+    eelab_cam_sub:
+      - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.144:554/stream2
     storefront_door_cam:
       - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.109:554/stream1
       - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.109
+    storefront_door_cam_sub:
+      - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.109:554/stream2
     machining_room_cam:
       - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.171:554/stream1
       - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.171
+    machining_room_cam_sub:
+      - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.171:554/stream2
     staff_office_cam:
       - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.91:554/stream1
       - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.91
+    staff_office_cam_sub:
+      - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.91:554/stream2
     shop_worktables_cam:
       - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.95:554/stream1
       - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.95
+    shop_worktables_cam_sub:
+      - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.95:554/stream2
     # print_room_cam:
     #   - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.89:554/stream1
     #   - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.89
     lobby_couches_cam:
       - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.97:554/stream1
       - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.97
+    lobby_couches_cam_sub:
+      - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.97:554/stream2
     welding_room_cam:
       - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.212:554/stream1
       - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.212
+    welding_room_cam_sub:
+      - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.212:554/stream2
     loft_storage_a_cam:
       - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.205:554/stream1
       - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.205
+    loft_storage_a_cam_sub:
+      - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.205:554/stream2
     loft_worktables_cam:
       - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.147:554/stream1
       - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.147
+    loft_worktables_cam_sub:
+      - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.147:554/stream2
     woodworking_area_cam:
       - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.149:554/stream1
       - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.149
+    woodworking_area_cam_sub:
+      - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.149:554/stream2
     # back_alley_cam:
     #   - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.219:554/stream1
     #   - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.219
@@ -63,23 +89,41 @@ go2rtc:
     # ---- Hiseeu wireless NVR @ 10.0.50.46 ----
     # chN_M.264 -> N = channel number - 1 (zero based), M = 0 main / 1 sub
     # Note port 80, not 554.
+    #
+    # The NVR cannot keep up when several clients pull 2880x1620 at once: a
+    # main stream measured 0.22x realtime under load while its 800x448 sub
+    # measured 1.11x on the same connection.
     dumpster_cam:
       - rtsp://admin:password@10.0.50.46:80/ch0_0.264
+    dumpster_cam_sub:
+      - rtsp://admin:password@10.0.50.46:80/ch0_1.264
     storefront_garage_cam:
       - rtsp://admin:password@10.0.50.46:80/ch1_0.264
+    storefront_garage_cam_sub:
+      - rtsp://admin:password@10.0.50.46:80/ch1_1.264
     building_side_cam:
       - rtsp://admin:password@10.0.50.46:80/ch2_0.264
+    building_side_cam_sub:
+      - rtsp://admin:password@10.0.50.46:80/ch2_1.264
 
     # wireless_nvr_3:
     #   - rtsp://admin:password@10.0.50.46:80/ch3_0.264
     back_pad_cam:
       - rtsp://admin:password@10.0.50.46:80/ch4_0.264
+    back_pad_cam_sub:
+      - rtsp://admin:password@10.0.50.46:80/ch4_1.264
     side_pad_cam:
       - rtsp://admin:password@10.0.50.46:80/ch5_0.264
+    side_pad_cam_sub:
+      - rtsp://admin:password@10.0.50.46:80/ch5_1.264
     shop_cam:
       - rtsp://admin:password@10.0.50.46:80/ch6_0.264
+    shop_cam_sub:
+      - rtsp://admin:password@10.0.50.46:80/ch6_1.264
     treeline_camera:
       - rtsp://admin:password@10.0.50.46:80/ch7_0.264
+    treeline_camera_sub:
+      - rtsp://admin:password@10.0.50.46:80/ch7_1.264
 
   webrtc:
     candidates:
@@ -92,11 +136,18 @@ cameras:
   #   enabled: true
   #   ffmpeg:
   #     inputs:
+  #       - path: rtsp://127.0.0.1:8554/back_alley_cam_sub
+  #         input_args: preset-rtsp-restream
+  #         roles:
+  #           - detect
   #       - path: rtsp://127.0.0.1:8554/back_alley_cam
   #         input_args: preset-rtsp-restream
   #         roles:
   #           - record
-  #           - detect
+  #   live:
+  #     streams:
+  #       Main: back_alley_cam
+  #       Sub: back_alley_cam_sub
 
   # onvif:
   #   host: 10.0.50.219
@@ -110,93 +161,116 @@ cameras:
     enabled: true
     ffmpeg:
       inputs:
+        - path: rtsp://127.0.0.1:8554/lobby_worktables_cam_sub
+          input_args: preset-rtsp-restream
+          roles:
+            - detect
         - path: rtsp://127.0.0.1:8554/lobby_worktables_cam
           input_args: preset-rtsp-restream
           roles:
             - record
-            - detect
-
+    live:
+      streams:
+        Main: lobby_worktables_cam
+        Sub: lobby_worktables_cam_sub
     motion:
       mask:
         motion_mask_1:
           friendly_name: Motion Mask 1
           enabled: true
           coordinates: 0.365,0.055,0,0.053,0,0,0.365,0
-    detect:
-      height: 720
-      width: 1280
+
   eelab_cam:
     enabled: true
     ffmpeg:
       inputs:
+        - path: rtsp://127.0.0.1:8554/eelab_cam_sub
+          input_args: preset-rtsp-restream
+          roles:
+            - detect
         - path: rtsp://127.0.0.1:8554/eelab_cam
           input_args: preset-rtsp-restream
           roles:
             - record
-            - detect
+    live:
+      streams:
+        Main: eelab_cam
+        Sub: eelab_cam_sub
     motion:
       mask:
         motion_mask_1:
           friendly_name: Motion Mask 1
           enabled: true
           coordinates: 0.365,0.055,0,0.053,0,0,0.365,0
-    detect:
-      height: 720
-      width: 1280
+
   storefront_door_cam:
     enabled: true
     ffmpeg:
       inputs:
+        - path: rtsp://127.0.0.1:8554/storefront_door_cam_sub
+          input_args: preset-rtsp-restream
+          roles:
+            - detect
         - path: rtsp://127.0.0.1:8554/storefront_door_cam
           input_args: preset-rtsp-restream
           roles:
             - record
-            - detect
+    live:
+      streams:
+        Main: storefront_door_cam
+        Sub: storefront_door_cam_sub
     motion:
       mask:
         motion_mask_1:
           friendly_name: Motion Mask 1
           enabled: true
           coordinates: 0.365,0.055,0,0.053,0,0,0.365,0
-    detect:
-      height: 720
-      width: 1280
+
   machining_room_cam:
     enabled: true
     ffmpeg:
       inputs:
+        - path: rtsp://127.0.0.1:8554/machining_room_cam_sub
+          input_args: preset-rtsp-restream
+          roles:
+            - detect
         - path: rtsp://127.0.0.1:8554/machining_room_cam
           input_args: preset-rtsp-restream
           roles:
             - record
-            - detect
+    live:
+      streams:
+        Main: machining_room_cam
+        Sub: machining_room_cam_sub
     motion:
       mask:
         motion_mask_1:
           friendly_name: Motion Mask 1
           enabled: true
           coordinates: 0.365,0.055,0,0.053,0,0,0.365,0
-    detect:
-      height: 720
-      width: 1280
+
   staff_office_cam:
     enabled: true
     ffmpeg:
       inputs:
+        - path: rtsp://127.0.0.1:8554/staff_office_cam_sub
+          input_args: preset-rtsp-restream
+          roles:
+            - detect
         - path: rtsp://127.0.0.1:8554/staff_office_cam
           input_args: preset-rtsp-restream
           roles:
             - record
-            - detect
+    live:
+      streams:
+        Main: staff_office_cam
+        Sub: staff_office_cam_sub
     motion:
       mask:
         motion_mask_1:
           friendly_name: Motion Mask 1
           enabled: true
           coordinates: 0.365,0.055,0,0.053,0,0,0.365,0
-    detect:
-      height: 720
-      width: 1280
     objects:
       filters:
         person:
@@ -205,79 +279,98 @@ cameras:
               friendly_name: Object Mask 1 (person)
               enabled: true
               coordinates: 0.923,0.267,0.962,0.313,0.932,0.423,0.896,0.37
+
   shop_worktables_cam:
     enabled: true
     ffmpeg:
       inputs:
+        - path: rtsp://127.0.0.1:8554/shop_worktables_cam_sub
+          input_args: preset-rtsp-restream
+          roles:
+            - detect
         - path: rtsp://127.0.0.1:8554/shop_worktables_cam
           input_args: preset-rtsp-restream
           roles:
             - record
-            - detect
+    live:
+      streams:
+        Main: shop_worktables_cam
+        Sub: shop_worktables_cam_sub
     motion:
       mask:
         motion_mask_1:
           friendly_name: Motion Mask 1
           enabled: true
           coordinates: 0.365,0.055,0,0.053,0,0,0.365,0
-    detect:
-      height: 720
-      width: 1280
+
   lobby_couches_cam:
     enabled: true
     ffmpeg:
       inputs:
+        - path: rtsp://127.0.0.1:8554/lobby_couches_cam_sub
+          input_args: preset-rtsp-restream
+          roles:
+            - detect
         - path: rtsp://127.0.0.1:8554/lobby_couches_cam
           input_args: preset-rtsp-restream
           roles:
             - record
-            - detect
+    live:
+      streams:
+        Main: lobby_couches_cam
+        Sub: lobby_couches_cam_sub
     motion:
       mask:
         motion_mask_1:
           friendly_name: Motion Mask 1
           enabled: true
           coordinates: 0.365,0.055,0,0.053,0,0,0.365,0
-    detect:
-      height: 720
-      width: 1280
+
   welding_room_cam:
     enabled: true
     ffmpeg:
       inputs:
+        - path: rtsp://127.0.0.1:8554/welding_room_cam_sub
+          input_args: preset-rtsp-restream
+          roles:
+            - detect
         - path: rtsp://127.0.0.1:8554/welding_room_cam
           input_args: preset-rtsp-restream
           roles:
             - record
-            - detect
+    live:
+      streams:
+        Main: welding_room_cam
+        Sub: welding_room_cam_sub
     motion:
       mask:
         motion_mask_1:
           friendly_name: Motion Mask 1
           enabled: true
           coordinates: 0.365,0.055,0,0.053,0,0,0.365,0
-    detect:
-      height: 720
-      width: 1280
+
   loft_storage_a_cam:
     enabled: true
     ffmpeg:
       inputs:
+        - path: rtsp://127.0.0.1:8554/loft_storage_a_cam_sub
+          input_args: preset-rtsp-restream
+          roles:
+            - detect
         - path: rtsp://127.0.0.1:8554/loft_storage_a_cam
           input_args: preset-rtsp-restream
           roles:
             - record
-            - detect
-
+    live:
+      streams:
+        Main: loft_storage_a_cam
+        Sub: loft_storage_a_cam_sub
     motion:
       mask:
         motion_mask_1:
           friendly_name: Motion Mask 1
           enabled: true
           coordinates: 0.365,0.055,0,0.053,0,0,0.365,0
-    detect:
-      height: 720
-      width: 1280
     detect:
       enabled: false
 
@@ -285,12 +378,18 @@ cameras:
     enabled: true
     ffmpeg:
       inputs:
+        - path: rtsp://127.0.0.1:8554/loft_worktables_cam_sub
+          input_args: preset-rtsp-restream
+          roles:
+            - detect
         - path: rtsp://127.0.0.1:8554/loft_worktables_cam
           input_args: preset-rtsp-restream
           roles:
             - record
-            - detect
-
+    live:
+      streams:
+        Main: loft_worktables_cam
+        Sub: loft_worktables_cam_sub
     motion:
       mask:
         motion_mask_1:
@@ -298,69 +397,81 @@ cameras:
           enabled: true
           coordinates: 0.365,0.055,0,0.053,0,0,0.365,0
     detect:
-      height: 720
-      width: 1280
-
-    detect:
       enabled: false
 
   woodworking_area_cam:
     enabled: true
     ffmpeg:
       inputs:
+        - path: rtsp://127.0.0.1:8554/woodworking_area_cam_sub
+          input_args: preset-rtsp-restream
+          roles:
+            - detect
         - path: rtsp://127.0.0.1:8554/woodworking_area_cam
           input_args: preset-rtsp-restream
           roles:
             - record
-            - detect
+    live:
+      streams:
+        Main: woodworking_area_cam
+        Sub: woodworking_area_cam_sub
     motion:
       mask:
         motion_mask_1:
           friendly_name: Motion Mask 1
           enabled: true
           coordinates: 0.365,0.055,0,0.003,0,0,0.365,0
-    detect:
-      height: 720
-      width: 1280
+
   dumpster_cam:
     enabled: true
     ffmpeg:
       inputs:
-        - path: rtsp://127.0.0.1:8554/dumpster_cam
+        - path: rtsp://127.0.0.1:8554/dumpster_cam_sub
           input_args: preset-rtsp-restream
           roles:
             - detect
+        - path: rtsp://127.0.0.1:8554/dumpster_cam
+          input_args: preset-rtsp-restream
+          roles:
             - record
-
-    detect:
-      height: 720
-      width: 1280
+    live:
+      streams:
+        Main: dumpster_cam
+        Sub: dumpster_cam_sub
 
   storefront_garage_cam:
     enabled: true
     ffmpeg:
       inputs:
-        - path: rtsp://127.0.0.1:8554/storefront_garage_cam
+        - path: rtsp://127.0.0.1:8554/storefront_garage_cam_sub
           input_args: preset-rtsp-restream
           roles:
             - detect
+        - path: rtsp://127.0.0.1:8554/storefront_garage_cam
+          input_args: preset-rtsp-restream
+          roles:
             - record
-    detect:
-      height: 720
-      width: 1280
+    live:
+      streams:
+        Main: storefront_garage_cam
+        Sub: storefront_garage_cam_sub
 
   building_side_cam:
     enabled: true
     ffmpeg:
       inputs:
-        - path: rtsp://127.0.0.1:8554/building_side_cam
+        - path: rtsp://127.0.0.1:8554/building_side_cam_sub
           input_args: preset-rtsp-restream
           roles:
             - detect
+        - path: rtsp://127.0.0.1:8554/building_side_cam
+          input_args: preset-rtsp-restream
+          roles:
             - record
-    detect:
-      height: 720
-      width: 1280
+    live:
+      streams:
+        Main: building_side_cam
+        Sub: building_side_cam_sub
 
   # wireless_nvr_3:
   #   enabled: true
@@ -383,54 +494,70 @@ cameras:
     enabled: true
     ffmpeg:
       inputs:
-        - path: rtsp://127.0.0.1:8554/back_pad_cam
+        - path: rtsp://127.0.0.1:8554/back_pad_cam_sub
           input_args: preset-rtsp-restream
           roles:
             - detect
+        - path: rtsp://127.0.0.1:8554/back_pad_cam
+          input_args: preset-rtsp-restream
+          roles:
             - record
-    detect:
-      height: 720
-      width: 1280
+    live:
+      streams:
+        Main: back_pad_cam
+        Sub: back_pad_cam_sub
 
   side_pad_cam:
     enabled: true
     ffmpeg:
       inputs:
-        - path: rtsp://127.0.0.1:8554/side_pad_cam
+        - path: rtsp://127.0.0.1:8554/side_pad_cam_sub
           input_args: preset-rtsp-restream
           roles:
             - detect
+        - path: rtsp://127.0.0.1:8554/side_pad_cam
+          input_args: preset-rtsp-restream
+          roles:
             - record
-    detect:
-      height: 720
-      width: 1280
+    live:
+      streams:
+        Main: side_pad_cam
+        Sub: side_pad_cam_sub
 
   shop_cam:
     enabled: true
     ffmpeg:
       inputs:
-        - path: rtsp://127.0.0.1:8554/shop_cam
+        - path: rtsp://127.0.0.1:8554/shop_cam_sub
           input_args: preset-rtsp-restream
           roles:
             - detect
+        - path: rtsp://127.0.0.1:8554/shop_cam
+          input_args: preset-rtsp-restream
+          roles:
             - record
-    detect:
-      height: 720
-      width: 1280
+    live:
+      streams:
+        Main: shop_cam
+        Sub: shop_cam_sub
 
   treeline_camera:
     enabled: true
     ffmpeg:
       inputs:
-        - path: rtsp://127.0.0.1:8554/treeline_camera
+        - path: rtsp://127.0.0.1:8554/treeline_camera_sub
           input_args: preset-rtsp-restream
           roles:
             - detect
+        - path: rtsp://127.0.0.1:8554/treeline_camera
+          input_args: preset-rtsp-restream
+          roles:
             - record
-    detect:
-      height: 720
-      width: 1280
-      
+    live:
+      streams:
+        Main: treeline_camera
+        Sub: treeline_camera_sub
+
 record:
   enabled: true
   continuous:
