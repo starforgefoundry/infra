@@ -608,3 +608,4 @@ camera_groups:
       - shop_cam
       - welding_room_cam
       - back_pad_cam
+      - loft_worktables_cam
