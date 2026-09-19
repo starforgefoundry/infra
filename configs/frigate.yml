@@ -122,6 +122,9 @@ cameras:
           friendly_name: Motion Mask 1
           enabled: true
           coordinates: 0.365,0.055,0,0.053,0,0,0.365,0
+    detect:
+      height: 720
+      width: 1280
   eelab_cam:
     enabled: true
     ffmpeg:
@@ -137,6 +140,9 @@ cameras:
           friendly_name: Motion Mask 1
           enabled: true
           coordinates: 0.365,0.055,0,0.053,0,0,0.365,0
+    detect:
+      height: 720
+      width: 1280
   storefront_door_cam:
     enabled: true
     ffmpeg:
@@ -152,6 +158,9 @@ cameras:
           friendly_name: Motion Mask 1
           enabled: true
           coordinates: 0.365,0.055,0,0.053,0,0,0.365,0
+    detect:
+      height: 720
+      width: 1280
   machining_room_cam:
     enabled: true
     ffmpeg:
@@ -167,6 +176,9 @@ cameras:
           friendly_name: Motion Mask 1
           enabled: true
           coordinates: 0.365,0.055,0,0.053,0,0,0.365,0
+    detect:
+      height: 720
+      width: 1280
   staff_office_cam:
     enabled: true
     ffmpeg:
@@ -182,6 +194,9 @@ cameras:
           friendly_name: Motion Mask 1
           enabled: true
           coordinates: 0.365,0.055,0,0.053,0,0,0.365,0
+    detect:
+      height: 720
+      width: 1280
     objects:
       filters:
         person:
@@ -205,6 +220,9 @@ cameras:
           friendly_name: Motion Mask 1
           enabled: true
           coordinates: 0.365,0.055,0,0.053,0,0,0.365,0
+    detect:
+      height: 720
+      width: 1280
   lobby_couches_cam:
     enabled: true
     ffmpeg:
@@ -220,6 +238,9 @@ cameras:
           friendly_name: Motion Mask 1
           enabled: true
           coordinates: 0.365,0.055,0,0.053,0,0,0.365,0
+    detect:
+      height: 720
+      width: 1280
   welding_room_cam:
     enabled: true
     ffmpeg:
@@ -235,6 +256,9 @@ cameras:
           friendly_name: Motion Mask 1
           enabled: true
           coordinates: 0.365,0.055,0,0.053,0,0,0.365,0
+    detect:
+      height: 720
+      width: 1280
   loft_storage_a_cam:
     enabled: true
     ffmpeg:
@@ -251,6 +275,9 @@ cameras:
           friendly_name: Motion Mask 1
           enabled: true
           coordinates: 0.365,0.055,0,0.053,0,0,0.365,0
+    detect:
+      height: 720
+      width: 1280
     detect:
       enabled: false
 
@@ -270,6 +297,9 @@ cameras:
           friendly_name: Motion Mask 1
           enabled: true
           coordinates: 0.365,0.055,0,0.053,0,0,0.365,0
+    detect:
+      height: 720
+      width: 1280
 
     detect:
       enabled: false
@@ -289,6 +319,9 @@ cameras:
           friendly_name: Motion Mask 1
           enabled: true
           coordinates: 0.365,0.055,0,0.003,0,0,0.365,0
+    detect:
+      height: 720
+      width: 1280
   dumpster_cam:
     enabled: true
     ffmpeg:
@@ -298,9 +331,10 @@ cameras:
           roles:
             - detect
             - record
-    live:
-      streams:
-        Main: dumpster_cam
+
+    detect:
+      height: 720
+      width: 1280
 
   storefront_garage_cam:
     enabled: true
@@ -311,9 +345,9 @@ cameras:
           roles:
             - detect
             - record
-    live:
-      streams:
-        Main: storefront_garage_cam
+    detect:
+      height: 720
+      width: 1280
 
   building_side_cam:
     enabled: true
@@ -324,9 +358,9 @@ cameras:
           roles:
             - detect
             - record
-    live:
-      streams:
-        Main: building_side_cam
+    detect:
+      height: 720
+      width: 1280
 
   # wireless_nvr_3:
   #   enabled: true
@@ -354,9 +388,9 @@ cameras:
           roles:
             - detect
             - record
-    live:
-      streams:
-        Main: back_pad_cam
+    detect:
+      height: 720
+      width: 1280
 
   side_pad_cam:
     enabled: true
@@ -367,9 +401,9 @@ cameras:
           roles:
             - detect
             - record
-    live:
-      streams:
-        Main: side_pad_cam
+    detect:
+      height: 720
+      width: 1280
 
   shop_cam:
     enabled: true
@@ -380,9 +414,9 @@ cameras:
           roles:
             - detect
             - record
-    live:
-      streams:
-        Main: shop_cam
+    detect:
+      height: 720
+      width: 1280
 
   treeline_camera:
     enabled: true
@@ -393,9 +427,10 @@ cameras:
           roles:
             - detect
             - record
-    live:
-      streams:
-        Main: treeline_camera
+    detect:
+      height: 720
+      width: 1280
+      
 record:
   enabled: true
   continuous:
