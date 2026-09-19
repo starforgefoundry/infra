@@ -79,8 +79,8 @@
       ExecStart =
         let
           script = pkgs.writeShellScript "migrate-recordings" ''
-            SRC_DIR="/mnt/nvr-ssd/recordings"
-            DEST_DIR="/mnt/nvr-hdd/recordings"
+            SRC_DIR="/mnt/nvr-ssd/frigate/recordings"
+            DEST_DIR="/mnt/nvr-hdd/frigate/recordings"
 
             ${pkgs.findutils}/bin/find "$SRC_DIR" -type f -mmin +20160 -print0 | while IFS= read -r -d "" file; do
               rel_path="''${file#$SRC_DIR/}"
