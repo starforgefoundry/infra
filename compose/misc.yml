@@ -6,7 +6,7 @@ networks:
 
 services:
   printer-subnet-router:
-    image: tailscale/tailscale:v1.102.4
+    image: tailscale/tailscale:v1.102.5
     hostname: printer-subnet-router
     healthcheck:
       test: ["CMD-SHELL", "tailscale status"]
@@ -25,7 +25,7 @@ services:
     restart: unless-stopped
 
   bwees-subnet-router:
-    image: tailscale/tailscale:v1.102.4
+    image: tailscale/tailscale:v1.102.5
     hostname: sf-subnet-router
     healthcheck:
       test: ["CMD-SHELL", "tailscale status"]
