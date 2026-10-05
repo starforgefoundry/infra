@@ -4,8 +4,6 @@ metadata:
   name: home-assistant
 spec:
   interval: 1h
-  # Held until its data is migrated off Docker (PLAN step 6)
-  suspend: true
   path: ./kubernetes/apps/shop/smarthome/home-assistant/app
   prune: true
   sourceRef:
