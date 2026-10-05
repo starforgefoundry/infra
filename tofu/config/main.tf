@@ -6,7 +6,6 @@ module "dns" {
   source = "../modules/dns"
 
   zone_id             = local.zone_id
-  records             = local.dns_records
   redirects           = local.dns_redirects
   public_ingress_ipv4 = local.public_ingress_enabled ? module.contabo.public_ipv4 : null
 }

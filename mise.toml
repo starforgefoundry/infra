@@ -208,19 +208,3 @@ EOF
 k wait --for=condition=complete "job/$job" --timeout=1h
 k logs "job/$job"
 '''
-
-# Lists every record in the zone with the "<zone_id>/<record_id>" import ID that
-# tofu/config/dns.tf needs.
-[tasks."tofu:dns-export"]
-run = '''
-#!/usr/bin/env bash
-set -euo pipefail
-
-token=$(op read --no-newline "op://Starforge Deployment/infra-tofu-credentials/cloudflare/api_token")
-api() { curl -fsS -H "Authorization: Bearer $token" "https://api.cloudflare.com/client/v4/$1"; }
-
-zone=$(api "zones?name=starforgefoundry.com" | jq -r '.result[0].id')
-api "zones/$zone/dns_records?per_page=5000" |
-  jq -r --arg zone "$zone" '.result[] |
-    [$zone + "/" + .id, .type, .name, (.proxied | tostring), (.ttl | tostring), (.priority // "" | tostring), .content] | @tsv'
-'''

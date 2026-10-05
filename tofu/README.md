@@ -21,9 +21,3 @@ Item `infra-tofu-credentials` in the `Starforge Deployment` 1Password vault:
 | `tailscale`  | `client_id`, `client_secret`               | OAuth client, all scopes                                                 |
 
 The 1Password service account needs read/write on `Starforge Deployment`.
-
-## Importing existing resources
-
-`config/imports.tf` adopts the Contabo instance, the tailnet policy and every
-existing DNS record. Fill in the `TODO` IDs (`mise run tofu:dns-export` prints
-the DNS ones), then `tofu plan` until it is empty before the first apply.
