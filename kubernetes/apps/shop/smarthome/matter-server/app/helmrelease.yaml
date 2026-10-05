@@ -61,7 +61,7 @@ spec:
       # That binds 5580 on the host, hence the pin and the Recreate strategy.
       hostNetwork: true
       nodeSelector:
-        kubernetes.io/hostname: starforge-server
+        kubernetes.io/hostname: shop-server
 
     service:
       main:

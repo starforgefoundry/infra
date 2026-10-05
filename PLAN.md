@@ -14,7 +14,7 @@ solves a problem, this plan copies its structure rather than inventing a new one
 | Question         | Answer                                                              |
 | ---------------- | ------------------------------------------------------------------- |
 | Cluster names    | `shop` (local, at the foundry) and `vps` (remote entrypoint)        |
-| NixOS host names | `starforge-server` (unchanged) and `starforge-vps` (new)            |
+| NixOS host names | `shop-server` and `vps-server` (renamed from `starforge-*`)   |
 | OpenTofu layout  | One root, one state, decomposed into `tofu/modules/*`               |
 | OpenTofu scope   | Infra only; staff Tofu stays in `starforge/staff`                   |
 | VPS              | New Contabo instance, managed by OpenTofu like homelab's `tau-ceti` |
@@ -29,8 +29,8 @@ infra/
 ├── kubernetes/
 │   ├── clusters/
 │   │   ├── base/            # shared Flux Kustomizations + HelmRelease patches
-│   │   ├── shop/            # entrypoint Flux reconciles on starforge-server
-│   │   └── vps/             # entrypoint Flux reconciles on starforge-vps
+│   │   ├── shop/            # entrypoint Flux reconciles on shop-server
+│   │   └── vps/             # entrypoint Flux reconciles on vps-server
 │   ├── components/          # volsync, intel-gpu
 │   └── apps/
 │       ├── base/            # flux-system, secrets, networking, storage, operators
@@ -38,7 +38,7 @@ infra/
 │       └── vps/             # networking (envoy-dfp, bind9), monitoring
 ├── nixos/
 │   ├── lib/                 # + k3s.nix, miroir.nix, beszel.nix from homelab
-│   └── hosts/{starforge-server,starforge-vps}/
+│   └── hosts/{shop-server,vps-server}/
 ├── tofu/
 │   ├── config/              # single root module, single state
 │   └── modules/             # contabo, dns, api-tokens, tailscale, flux-webhooks
@@ -102,7 +102,7 @@ Bambuddy needs SSDP discovery on the printer VLAN and one IP per virtual printer
 Today `network_mode: host` gives the container the node's `printers` VLAN
 interface, which NixOS already configures with `10.0.60.201` and `10.0.60.202`.
 
-`hostNetwork: true` + `nodeSelector: kubernetes.io/hostname: starforge-server` +
+`hostNetwork: true` + `nodeSelector: kubernetes.io/hostname: shop-server` +
 `strategy: Recreate` is a 1:1 match for that: the pod gets every node address,
 including both printer-VLAN IPs, and broadcast/multicast work because it shares
 the node's stack. Homelab already uses exactly this shape for `home-assistant`,
@@ -216,7 +216,7 @@ One repeatable recipe, used for every stateful app:
 1. Stop the Docker service for that app.
 2. Apply the app's manifests so the PVC is created and bound, with the workload
    scaled to 0.
-3. Run a one-shot Job pinned to `starforge-server` mounting both the hostPath
+3. Run a one-shot Job pinned to `shop-server` mounting both the hostPath
    (`/storage/<app>`) and the PVC, running `rsync -a`.
 4. Scale the workload up, verify, then remove the compose service.
 
@@ -234,7 +234,7 @@ One repeatable recipe, used for every stateful app:
 | `matter-server`         | `shop/smarthome`         | Copy homelab's manifest verbatim, adjusting `--primary-interface`                                                                                                                                                                                                                                                           |
 | `mosquitto`             | `shop/smarthome`         | Copy homelab's manifest verbatim                                                                                                                                                                                                                                                                                            |
 | `bambuddy`              | `shop/printing`          | `hostNetwork` + node pin + `Recreate`                                                                                                                                                                                                                                                                                       |
-| `printer-subnet-router` | `starforge-server` NixOS | `10.0.60.0/24` added to the node's `--advertise-routes`                                                                                                                                                                                                                                                                     |
+| `printer-subnet-router` | `shop-server` NixOS | `10.0.60.0/24` added to the node's `--advertise-routes`                                                                                                                                                                                                                                                                     |
 | `bwees-subnet-router`   | `shop/networking`        | Userspace `tailscale` pod with a `miroir` PVC for state                                                                                                                                                                                                                                                                     |
 | `beszel` (NixOS)        | `vps/monitoring` (hub)   | Agents stay as `lib/beszel.nix` on each node                                                                                                                                                                                                                                                                                |
 
@@ -284,8 +284,8 @@ serving traffic until step 6.
 
 - [x] 1.1 `kubernetes/` — clusters `shop` and `vps`, shared `apps/base`, the
       `volsync` (R2) and `intel-gpu` components, every app manifest.
-- [x] 1.2 `nixos/lib/{k3s,miroir,beszel}.nix`; `hosts/starforge-vps`;
-      `starforge-server` gains k3s, miroir, `tag:shop`, the `10.0.60.0/24` route.
+- [x] 1.2 `nixos/lib/{k3s,miroir,beszel}.nix`; `hosts/vps-server`;
+      `shop-server` gains k3s, miroir, `tag:shop`, the `10.0.60.0/24` route.
 - [x] 1.3 `tofu/config` + `tofu/modules/{contabo,dns,api-tokens,restic,tailscale,flux-webhooks}`.
 - [x] 1.4 `mise.toml` tasks: `bootstrap`, `cluster:*`, `nixos:*`,
       `migrate:pvc`, `tofu:dns-export`.
@@ -318,7 +318,7 @@ All in the `Starforge Deployment` 1Password vault unless noted.
 - [x] 3.1 Order the Contabo VPS (`194.238.28.254`, St. Louis).
 - [x] 3.2 `nixos-anywhere` onto the VPS; node has ExternalIP `194.238.28.254`.
 - [x] 3.3 VPS joined the tailnet as a regular device; `tag:vps` does not exist until 4.4.
-- [x] 3.4 `mise run bootstrap starforge-vps vps`.
+- [x] 3.4 `mise run bootstrap vps-server vps`.
 - [x] 3.5 Verify bind9, envoy-dfp, envoy-ingress and `vps-ingress` are up.
 
 ### 4. OpenTofu
@@ -338,10 +338,10 @@ All in the `Starforge Deployment` 1Password vault unless noted.
 
 ### 5. Shop cluster (`shop`)
 
-- [ ] 5.1 `mise run nixos:switch starforge-server`. k3s enables the system
+- [ ] 5.1 `mise run nixos:switch shop-server`. k3s enables the system
       containerd, which may restart the Docker containers.
 - [ ] 5.2 `tailscale up --advertise-tags=tag:shop,tag:nixos` on the server.
-- [ ] 5.3 `mise run bootstrap starforge-server shop`.
+- [ ] 5.3 `mise run bootstrap shop-server shop`.
 - [ ] 5.4 Confirm `shop-ingress` is reachable through the VPS DFP.
 
 ### 6. App migration
@@ -364,7 +364,7 @@ Traefik until each app is verified, then flip.
 - [ ] 6.6 `bwees-subnet-router` —
       `networking bwees-subnet-router-state /storage/bwees-sr`; stop
       `printer-subnet-router`.
-- [ ] 6.7 beszel hub — move `/var/lib/beszel-hub` from `starforge-server` into
+- [ ] 6.7 beszel hub — move `/var/lib/beszel-hub` from `shop-server` into
       `beszel-data` on the VPS, then drop `services.beszel.hub` from the server.
 
 ### 7. Cutover
@@ -378,7 +378,7 @@ Traefik until each app is verified, then flip.
 
 - [ ] 8.1 Delete `compose/`, `ansible/`, `configs/`, `justfile`,
       `.github/workflows/deploy-infra.yml`.
-- [ ] 8.2 Remove `lib/docker.nix` from `starforge-server`; drop `ansible` and
+- [ ] 8.2 Remove `lib/docker.nix` from `shop-server`; drop `ansible` and
       `just` from `mise.toml`.
 - [ ] 8.3 Add `.github/workflows/images.yml` for `apps/frigate-oauth`.
 - [ ] 8.4 Adopt homelab's `renovate.json` (home-operations presets, fluxcd

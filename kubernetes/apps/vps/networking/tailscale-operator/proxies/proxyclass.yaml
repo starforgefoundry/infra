@@ -6,7 +6,7 @@
 # advertises <node ExternalIP>:<nodePort> as a Tailscale endpoint, letting
 # tailnet peers open a direct connection to the VPS.
 #
-# Requires (see nixos/hosts/starforge-vps):
+# Requires (see nixos/hosts/vps-server):
 #   - the k3s node to expose an ExternalIP (--node-external-ip)
 #   - the host firewall to allow inbound UDP on these ports
 apiVersion: tailscale.com/v1alpha1

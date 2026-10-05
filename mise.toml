@@ -163,7 +163,7 @@ k get nodes
 usage = '''
 arg "namespace"
 arg "claim"
-arg "source" help="Host directory on starforge-server, e.g. /storage/hass"
+arg "source" help="Host directory on shop-server, e.g. /storage/hass"
 arg "context" default="shop"
 '''
 run = '''
@@ -185,7 +185,7 @@ spec:
     spec:
       restartPolicy: Never
       nodeSelector:
-        kubernetes.io/hostname: starforge-server
+        kubernetes.io/hostname: shop-server
       containers:
         - name: rsync
           image: docker.io/library/alpine:3.22

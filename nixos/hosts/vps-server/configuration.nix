@@ -21,7 +21,7 @@ in
   system.stateVersion = "26.05";
 
   # Networking/Clock
-  networking.hostName = "starforge-vps";
+  networking.hostName = "vps-server";
   time.timeZone = "America/Chicago";
 
   services.openssh.enable = true;

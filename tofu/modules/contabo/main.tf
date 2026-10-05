@@ -1,5 +1,5 @@
 resource "contabo_instance" "starforge_vps" {
-  display_name = "starforge-vps"
+  display_name = "vps-server"
 
   lifecycle {
     // Destroying cancels the Contabo contract.

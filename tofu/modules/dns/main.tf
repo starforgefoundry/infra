@@ -20,7 +20,7 @@ resource "cloudflare_dns_record" "wildcard" {
   name    = "*"
   type    = "A"
   content = var.public_ingress_ipv4
-  comment = "Public ingress on starforge-vps. Managed by Tofu."
+  comment = "Public ingress on vps-server. Managed by Tofu."
   proxied = false
   ttl     = 300
 }

@@ -83,7 +83,7 @@ spec:
 
     defaultPodOptions:
       nodeSelector:
-        kubernetes.io/hostname: starforge-server
+        kubernetes.io/hostname: shop-server
 
     service:
       main:

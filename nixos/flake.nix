@@ -19,18 +19,18 @@
       inherit (utils) mkHost;
     in
     {
-      nixosConfigurations.starforge-server = mkHost {
+      nixosConfigurations.shop-server = mkHost {
         system = "x86_64-linux";
         modules = [
           disko.nixosModules.disko
-          ./hosts/starforge-server/configuration.nix
+          ./hosts/shop-server/configuration.nix
         ];
       };
-      nixosConfigurations.starforge-vps = mkHost {
+      nixosConfigurations.vps-server = mkHost {
         system = "x86_64-linux";
         modules = [
           disko.nixosModules.disko
-          ./hosts/starforge-vps/configuration.nix
+          ./hosts/vps-server/configuration.nix
         ];
       };
     };

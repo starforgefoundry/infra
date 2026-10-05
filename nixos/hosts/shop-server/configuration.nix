@@ -20,7 +20,7 @@
   system.stateVersion = "25.11";
 
   # Networking/Clock
-  networking.hostName = "starforge-server";
+  networking.hostName = "shop-server";
   time.timeZone = "America/Chicago";
 
   networking.firewall.enable = false;

@@ -1,5 +1,5 @@
 ---
-# mergerfs over the NVR SSD and HDD, assembled by NixOS on starforge-server. The
+# mergerfs over the NVR SSD and HDD, assembled by NixOS on shop-server. The
 # nightly migrate-recordings timer there moves old footage from SSD to HDD.
 apiVersion: v1
 kind: PersistentVolume
@@ -20,4 +20,4 @@ spec:
         - matchExpressions:
             - key: kubernetes.io/hostname
               operator: In
-              values: [starforge-server]
+              values: [shop-server]
