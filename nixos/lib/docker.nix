@@ -7,7 +7,7 @@
 
   # Docker
   virtualisation.docker.enable = true;
-  virtualisation.docker.package = pkgs-stable.docker;
+  virtualisation.docker.package = pkgs-stable.docker_29;
   virtualisation.docker.daemon.settings.hosts = [
     "unix:///var/run/docker.sock"
     "tcp://${config.services.tailscale.ip}:2375"
