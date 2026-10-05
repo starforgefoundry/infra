@@ -367,16 +367,16 @@ Traefik until each app is verified, then flip.
 
 ### 7. Cutover
 
-- [ ] 7.1 Delete the Cloudflare Tunnel and its `cam`/`hass`/`print` CNAMEs in
-      the dashboard (neither is in Tofu).
-- [ ] 7.2 Stop and remove `traefik` and `cloudflared`.
+- [x] 7.1 Delete the `cam`/`hass`/`print`/`bambu-connect` tunnel CNAMEs. The tunnel
+      itself still needs deleting in the dashboard (Tofu token has no tunnel scope).
+- [x] 7.2 Stop and remove `traefik` and `cloudflared`.
 - [ ] 7.3 Add shop-LAN DNS overrides if the hairpin decision lands that way.
 
 ### 8. Cleanup
 
-- [ ] 8.1 Delete `compose/`, `ansible/`, `configs/`, `justfile`,
+- [x] 8.1 Delete `compose/`, `ansible/`, `configs/`, `justfile`,
       `.github/workflows/deploy-infra.yml`.
-- [ ] 8.2 Remove `lib/docker.nix` from `shop-server`; drop `ansible` and
+- [x] 8.2 Remove `lib/docker.nix` from `shop-server`; drop `ansible` and
       `just` from `mise.toml`.
 - [x] 8.3 Dropped: `apps/frigate-oauth` replaced by Envoy OIDC.
 - [x] 8.4 Adopt homelab's `renovate.json` (home-operations presets, fluxcd

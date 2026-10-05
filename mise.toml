@@ -2,10 +2,6 @@
 opentofu = "1.13.1"
 helm = "4.3.0"
 kustomize = "5.8.2"
-# Docker Compose deploys, removed once every app runs on Flux
-ansible = "latest"
-go = "latest"
-just = "latest"
 
 [task_config]
 includes = ["nixos/tasks.toml"]

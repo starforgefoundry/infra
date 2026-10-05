@@ -10,7 +10,6 @@
     ../../lib/base-packages.nix
     ../../lib/beszel.nix
     ../../lib/starforge.nix
-    ../../lib/docker.nix
     ../../lib/garbage-collect.nix
     ../../lib/tailscale.nix
     ../../lib/k3s.nix
