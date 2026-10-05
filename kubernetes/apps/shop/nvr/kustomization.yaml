@@ -5,4 +5,3 @@ namespace: nvr
 resources:
   - namespace.yaml
   - frigate/ks.yaml
-  - frigate-oauth/ks.yaml

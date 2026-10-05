@@ -23,7 +23,6 @@ spec:
       namespace: secrets
     - name: intel-device-plugins
       namespace: operators
-    - name: frigate-oauth
   components:
     - ../../../../../components/volsync
   postBuild:

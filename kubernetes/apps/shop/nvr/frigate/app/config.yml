@@ -16,6 +16,10 @@ proxy:
   header_map:
     user: x-forwarded-user
     role: x-forwarded-groups
+    # envoy sends the Google account email as the role header
+    role_map:
+      admin:
+        - bwees@starforgefoundry.com
   logout_url: /_oauth/logout
 
 database:

@@ -42,7 +42,6 @@ infra/
 ├── tofu/
 │   ├── config/              # single root module, single state
 │   └── modules/             # contabo, dns, api-tokens, tailscale, flux-webhooks
-├── apps/frigate-oauth/      # unchanged
 ├── mise.toml                # replaces justfile
 └── .github/workflows/       # tofu.yml, images.yml
 ```
@@ -229,7 +228,7 @@ One repeatable recipe, used for every stateful app:
 | `traefik`               | deleted                  | Replaced by `envoy-ingress` in both clusters                                                                                                                                                                                                                                                                                |
 | `cloudflared`           | deleted                  | Replaced by `envoy-dfp` on the VPS                                                                                                                                                                                                                                                                                          |
 | `frigate`               | `shop/nvr`               | Pod network with `hostPort` 8554/8555 (go2rtc RTSP/WebRTC on the existing candidate IPs) — `hostNetwork` would expose unauthenticated port 5000 on the LAN; Intel GPU via the `intel-gpu` component, 4Gi `emptyDir` at `/dev/shm`, 1Gi memory `emptyDir` at `/tmp/cache`, hostPath PV for `/media/frigate`                  |
-| `oauth-middleware`      | `shop/nvr`               | `main.go` falls back to the request URI when `X-Forwarded-Uri` is absent (Envoy ext_authz sends the original path as the request path); wired via Envoy Gateway `SecurityPolicy.extAuth.http` with `headersToBackend: [x-forwarded-user, x-forwarded-groups]` — a direct equivalent of the Traefik `forwardauth` middleware |
+| `oauth-middleware`      | deleted                  | Replaced by an Envoy Gateway OIDC `SecurityPolicy` on the frigate route: the ID token email goes into `x-forwarded-user` and `x-forwarded-groups`, and Frigate `proxy.role_map` maps it to a role |
 | `homeassistant`         | `shop/smarthome`         | `hostNetwork` + node pin; `/dev/ttyUSB0` as a hostPath `CharDevice` (switch to a `/dev/serial/by-id/` path); `trusted_proxies` changes from `172.40.0.0/24` to the pod CIDR                                                                                                                                                 |
 | `matter-server`         | `shop/smarthome`         | Copy homelab's manifest verbatim, adjusting `--primary-interface`                                                                                                                                                                                                                                                           |
 | `mosquitto`             | `shop/smarthome`         | Copy homelab's manifest verbatim                                                                                                                                                                                                                                                                                            |
@@ -269,8 +268,7 @@ Items to create:
 | `flux-webhooks`      | Flux `Receiver` per cluster (written by Tofu)              |
 | `flux-github-status` | Flux GitHub commit-status Provider                         |
 | `frigate`            | `FRIGATE_TAPO_PASSWORD`, `FRIGATE_TAPO_CLOUD_PASSWORD`     |
-| `gauth`              | `GAUTH_CLIENT_ID`/`SECRET` for frigate-oauth and HA OpenID |
-| `frigate-oauth`      | `AUTH_SECRET`                                              |
+| `gauth`              | `GAUTH_CLIENT_ID`/`SECRET` for Frigate OIDC and HA OpenID |
 | `restic-*`           | volsync                                                    |
 
 ---
@@ -358,7 +356,7 @@ Traefik until each app is verified, then flip.
       `frigate.nvr.svc.cluster.local:5000`.
 - [ ] 6.4 `bambuddy` — `printing bambuddy-data /storage/bambuddy` (holds
       `data/` and `logs/`). Verify SSDP discovery from a slicer on the shop LAN.
-- [ ] 6.5 `frigate` + `frigate-oauth` — `nvr frigate-db /storage/frigate`.
+- [ ] 6.5 `frigate` — `nvr frigate-db /storage/frigate`.
       Verify GPU detection, recordings under `/mnt/nvr-storage`, WebRTC playback,
       the Google login flow.
 - [ ] 6.6 `bwees-subnet-router` —
@@ -380,7 +378,7 @@ Traefik until each app is verified, then flip.
       `.github/workflows/deploy-infra.yml`.
 - [ ] 8.2 Remove `lib/docker.nix` from `shop-server`; drop `ansible` and
       `just` from `mise.toml`.
-- [ ] 8.3 Add `.github/workflows/images.yml` for `apps/frigate-oauth`.
+- [x] 8.3 Dropped: `apps/frigate-oauth` replaced by Envoy OIDC.
 - [x] 8.4 Adopt homelab's `renovate.json` (home-operations presets, fluxcd
       grouping).
 - [ ] 8.5 Rewrite `README.md` on homelab's structure.
@@ -405,8 +403,5 @@ mail delivery; do not skip it.
 ## Open items
 
 1. **LAN hairpin** — router-level DNS overrides, or accept the round trip.
-2. **Frigate auth, longer term** — Envoy Gateway's native OIDC `SecurityPolicy`
-   with `claimToHeaders` could retire `apps/frigate-oauth` entirely. Worth a
-   spike after the migration, not during it.
-3. **Monitoring scope** — whether the `vps` cluster picks up Gatus for starforge
+2. **Monitoring scope** — whether the `vps` cluster picks up Gatus for starforge
    endpoints, or homelab's existing Gatus keeps covering them.

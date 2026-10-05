@@ -1,25 +1,56 @@
 ---
-# Every request to Frigate is checked by frigate-oauth first. A 200 lets it
-# through with the user and role headers Frigate's proxy auth reads; anything
-# else (the Google redirect, the callback's cookie) goes straight to the client.
+# Google login in front of Frigate. The ID token's email becomes both the user
+# and the role header; Frigate's proxy.role_map turns the email into a role.
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: SecurityPolicy
 metadata:
-  name: frigate-oauth
+  name: frigate-oidc
 spec:
   targetRefs:
     - group: gateway.networking.k8s.io
       kind: HTTPRoute
       name: frigate
-  extAuth:
-    # Envoy only forwards Host, Method, Path and Authorization by default; the
-    # session lives in a cookie.
-    headersToExtAuth:
-      - cookie
-    http:
-      backendRefs:
-        - name: frigate-oauth
-          port: 4181
-      headersToBackend:
-        - x-forwarded-user
-        - x-forwarded-groups
+  oidc:
+    provider:
+      issuer: https://accounts.google.com
+    clientIDRef:
+      name: frigate-oidc
+    clientSecret:
+      name: frigate-oidc
+    scopes:
+      - openid
+      - email
+    # Already registered on the Google OAuth client
+    redirectURL: https://cam.starforgefoundry.com/_oauth/callback
+    logoutPath: /_oauth/logout
+    cookieNames:
+      idToken: frigate-id-token
+      accessToken: frigate-access-token
+    forwardIDToken:
+      header: x-frigate-id-token
+  jwt:
+    providers:
+      - name: google
+        issuer: https://accounts.google.com
+        remoteJWKS:
+          uri: https://www.googleapis.com/oauth2/v3/certs
+        extractFrom:
+          headers:
+            - name: x-frigate-id-token
+        claimToHeaders:
+          - claim: email
+            header: x-forwarded-user
+          - claim: email
+            header: x-forwarded-groups
+  authorization:
+    defaultAction: Deny
+    rules:
+      - name: workspace-accounts
+        action: Allow
+        principal:
+          jwt:
+            provider: google
+            claims:
+              - name: hd
+                values:
+                  - starforgefoundry.com
