@@ -1,0 +1,31 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: frigate
+spec:
+  interval: 1h
+  path: ./kubernetes/apps/shop/nvr/frigate/app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  dependsOn:
+    - name: miroir-config
+      namespace: storage
+    - name: volsync
+      namespace: storage
+    - name: onepassword
+      namespace: secrets
+    - name: intel-device-plugins
+      namespace: operators
+    - name: frigate-oauth
+  components:
+    - ../../../../../components/volsync
+  postBuild:
+    substitute:
+      APP: frigate
+      VOLSYNC_CLAIM: frigate-db
+      VOLSYNC_UID: '0'
+      VOLSYNC_GID: '0'
+  targetNamespace: nvr

@@ -1,0 +1,15 @@
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: BackendTrafficPolicy
+metadata:
+  name: dfp-backend-tuning
+  namespace: networking
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: envoy-dfp
+  connection:
+    bufferLimit: 1Mi
+  circuitBreaker:
+    maxConnections: 10000

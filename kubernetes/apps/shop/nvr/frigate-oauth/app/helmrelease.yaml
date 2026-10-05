@@ -1,0 +1,48 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: frigate-oauth
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: frigate-oauth
+  values:
+    controllers:
+      main:
+        annotations:
+          reloader.stakater.com/auto: 'true'
+        containers:
+          main:
+            image:
+              repository: ghcr.io/starforgefoundry/frigate-oauth
+              tag: latest
+              pullPolicy: Always
+            env:
+              CALLBACK_URL: https://cam.starforgefoundry.com/_oauth/callback
+            envFrom:
+              - secretRef:
+                  name: frigate-oauth
+            resources:
+              requests:
+                cpu: 10m
+                memory: 32Mi
+              limits:
+                memory: 128Mi
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: 4181
+                  periodSeconds: 10
+                  failureThreshold: 3
+              readiness: *probes
+
+    service:
+      main:
+        controller: main
+        ports:
+          http:
+            port: 4181

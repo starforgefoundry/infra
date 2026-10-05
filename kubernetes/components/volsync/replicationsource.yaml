@@ -1,0 +1,29 @@
+---
+# Nightly restic backup of ${VOLSYNC_CLAIM} to Cloudflare R2 (offsite).
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationSource
+metadata:
+  name: ${APP}-r2
+spec:
+  sourcePVC: ${VOLSYNC_CLAIM}
+  trigger:
+    schedule: '${VOLSYNC_SCHEDULE:=0 2 * * *}'
+  restic:
+    repository: ${APP}-restic-r2
+    copyMethod: Snapshot
+    volumeSnapshotClassName: '${VOLSYNC_SNAPSHOTCLASS:=miroir}'
+    # Snapshot storage class, 1 replica,
+    # Delete reclaim policy to prevent ballooning
+    storageClassName: '${VOLSYNC_PIT_STORAGECLASS:=miroir-volsync-src}'
+    cacheStorageClassName: '${VOLSYNC_STORAGECLASS:=miroir}'
+    cacheCapacity: '${VOLSYNC_CACHE_CAPACITY:=2Gi}'
+    moverSecurityContext:
+      runAsUser: ${VOLSYNC_UID:=1000}
+      runAsGroup: ${VOLSYNC_GID:=1000}
+      fsGroup: ${VOLSYNC_GID:=1000}
+    pruneIntervalDays: 7
+    retain:
+      daily: 7
+      weekly: 2
+      monthly: 2
+      yearly: 1

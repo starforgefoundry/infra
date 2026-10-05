@@ -59,11 +59,15 @@ func mustEnv(key string) string {
 	return v
 }
 
-// handleForwardAuth is the single entrypoint called by Traefik's forwardauth
-// for every request. We dispatch based on X-Forwarded-Uri to handle the OAuth
-// callback and logout within the forwardauth flow itself.
+// handleForwardAuth is the single entrypoint called by the proxy for every
+// request. We dispatch on the original URI to handle the OAuth callback and
+// logout within the auth flow itself. Traefik's forwardauth sends it as
+// X-Forwarded-Uri; Envoy's ext_authz sends it as the request path.
 func handleForwardAuth(w http.ResponseWriter, r *http.Request) {
 	forwardedURI := r.Header.Get("X-Forwarded-Uri")
+	if forwardedURI == "" {
+		forwardedURI = r.URL.RequestURI()
+	}
 
 	switch {
 	case strings.HasPrefix(forwardedURI, "/_oauth/callback"):
@@ -100,7 +104,7 @@ func handleAuth(w http.ResponseWriter, r *http.Request) {
 }
 
 // handleCallback processes the OAuth callback. The query parameters (code, state)
-// are on X-Forwarded-Uri since Traefik forwards the original URI as a header.
+// are on the original URI.
 func handleCallback(w http.ResponseWriter, r *http.Request, forwardedURI string) {
 	sess, _ := store.Get(r, sessionName)
 
@@ -191,7 +195,7 @@ func roleForUser(email string) string {
 }
 
 // buildOriginalURL reconstructs the URL the user originally requested,
-// using the X-Forwarded-* headers set by Traefik.
+// using the X-Forwarded-* headers set by the proxy.
 func buildOriginalURL(r *http.Request) string {
 	scheme := r.Header.Get("X-Forwarded-Proto")
 	if scheme == "" {

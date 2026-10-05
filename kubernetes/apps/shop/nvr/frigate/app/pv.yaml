@@ -1,0 +1,23 @@
+---
+# mergerfs over the NVR SSD and HDD, assembled by NixOS on starforge-server. The
+# nightly migrate-recordings timer there moves old footage from SSD to HDD.
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: frigate-recordings
+spec:
+  capacity:
+    storage: 10Ti
+  accessModes: [ReadWriteOnce]
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ''
+  hostPath:
+    path: /mnt/nvr-storage/frigate
+    type: Directory
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values: [starforge-server]

@@ -1,0 +1,25 @@
+---
+# Every request to Frigate is checked by frigate-oauth first. A 200 lets it
+# through with the user and role headers Frigate's proxy auth reads; anything
+# else (the Google redirect, the callback's cookie) goes straight to the client.
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: frigate-oauth
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: frigate
+  extAuth:
+    # Envoy only forwards Host, Method, Path and Authorization by default; the
+    # session lives in a cookie.
+    headersToExtAuth:
+      - cookie
+    http:
+      backendRefs:
+        - name: frigate-oauth
+          port: 4181
+      headersToBackend:
+        - x-forwarded-user
+        - x-forwarded-groups

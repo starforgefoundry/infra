@@ -26,5 +26,12 @@
           ./hosts/starforge-server/configuration.nix
         ];
       };
+      nixosConfigurations.starforge-vps = mkHost {
+        system = "x86_64-linux";
+        modules = [
+          disko.nixosModules.disko
+          ./hosts/starforge-vps/configuration.nix
+        ];
+      };
     };
 }

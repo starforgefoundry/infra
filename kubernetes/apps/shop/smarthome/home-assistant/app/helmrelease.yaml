@@ -1,0 +1,109 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: home-assistant
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: home-assistant
+  values:
+    controllers:
+      main:
+        strategy: Recreate
+        annotations:
+          reloader.stakater.com/auto: 'true'
+        containers:
+          main:
+            image:
+              repository: ghcr.io/home-assistant/home-assistant
+              tag: '2026.9.4'
+            env:
+              TZ: America/Chicago
+            envFrom:
+              - secretRef:
+                  name: home-assistant
+            # Device access for the Zigbee dongle
+            securityContext:
+              privileged: true
+            resources:
+              requests:
+                cpu: 100m
+                memory: 512Mi
+              limits:
+                memory: 4Gi
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /manifest.json
+                    port: 8123
+                  timeoutSeconds: 5
+                  periodSeconds: 10
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /manifest.json
+                    port: 8123
+                  initialDelaySeconds: 10
+                  periodSeconds: 10
+                  failureThreshold: 30
+
+    defaultPodOptions:
+      # Needs the node's LAN interface for mDNS discovery and the Zigbee dongle
+      # plugged into this machine.
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      nodeSelector:
+        kubernetes.io/hostname: starforge-server
+
+    service:
+      main:
+        controller: main
+        ports:
+          http:
+            port: 8123
+
+    route:
+      main:
+        parentRefs:
+          - name: envoy-ingress
+            namespace: networking
+        hostnames:
+          - hass.starforgefoundry.com
+        rules:
+          - backendRefs:
+              - identifier: main
+                port: 8123
+
+    persistence:
+      config:
+        existingClaim: home-assistant-config
+        globalMounts:
+          - path: /config
+      configuration:
+        type: configMap
+        name: home-assistant-config
+        globalMounts:
+          - path: /config/configuration.yaml
+            subPath: configuration.yaml
+            readOnly: true
+      dbus:
+        type: hostPath
+        hostPath: /run/dbus
+        hostPathType: Directory
+        globalMounts:
+          - path: /run/dbus
+            readOnly: true
+      zigbee:
+        type: hostPath
+        hostPath: /dev/ttyUSB0
+        hostPathType: CharDevice
+        globalMounts:
+          - path: /dev/ttyUSB0

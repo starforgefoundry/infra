@@ -1,0 +1,49 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: external-dns-bind
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: external-dns-bind
+  interval: 1h
+  values:
+    provider:
+      name: rfc2136
+    env:
+      - name: EXTERNAL_DNS_RFC2136_TSIG_SECRET
+        valueFrom:
+          secretKeyRef:
+            name: external-dns-rfc2136
+            key: TSIG_SECRET
+    extraArgs:
+      - --gateway-name=envoy-ingress
+      - --rfc2136-host=dns.tail04f5a4.ts.net
+      - --rfc2136-port=53
+      - --rfc2136-zone=starforgefoundry.com
+      - --rfc2136-tsig-keyname=external-dns
+      - --rfc2136-tsig-secret-alg=hmac-sha256
+      # external-dns reads the zone back by AXFR to work out what it already owns.
+      - --rfc2136-axfr
+      - --rfc2136-min-ttl=60s
+      # The forward proxy on the vps reaches every cluster over the tailnet, so
+      # each record is a CNAME to that cluster's ingress VIPService.
+      - --default-targets=${CLUSTER}-ingress.tail04f5a4.ts.net
+      - --force-default-targets
+    triggerLoopOnEvent: true
+    policy: sync
+    sources:
+      - gateway-httproute
+    # Both clusters write into the one zone, so ownership is what keeps them
+    # from pruning each other's records.
+    txtOwnerId: ${CLUSTER}
+    txtPrefix: k8s.%{record_type}-
+    domainFilters:
+      - starforgefoundry.com
+    resources:
+      requests:
+        cpu: 10m
+        memory: 64Mi
+      limits:
+        memory: 128Mi

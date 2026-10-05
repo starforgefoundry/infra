@@ -1,4 +1,230 @@
 [tools]
+opentofu = "1.13.1"
+helm = "4.3.0"
+kustomize = "5.8.1"
+# Docker Compose deploys, removed once every app runs on Flux
 ansible = "latest"
 go = "latest"
 just = "latest"
+
+[task_config]
+includes = ["nixos/tasks.toml"]
+
+[tasks.bootstrap]
+usage = '''
+arg "host"
+arg "cluster" default=""
+arg "user" default="starforge"
+'''
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+
+cluster="${usage_cluster:-$usage_host}"
+remote="$usage_user@$usage_host"
+instance=kubernetes/apps/base/flux-system/flux-instance/app/fluxinstance.yaml
+chart=kubernetes/apps/base/flux-system/flux-operator/app/ocirepository.yaml
+
+apply() { ssh "$remote" 'sudo k3s kubectl apply --server-side --force-conflicts -f -'; }
+apply_in() { ssh "$remote" "sudo k3s kubectl apply --server-side --force-conflicts -n $1 -f -"; }
+ensure_ns() { ssh "$remote" "sudo k3s kubectl create namespace $1 \
+  --dry-run=client -o yaml | sudo k3s kubectl apply -f -"; }
+
+echo "==> Creating namespaces"
+ensure_ns secrets
+ensure_ns flux-system
+
+echo "==> Seeding 1Password Connect credentials"
+token=$(op read --no-newline "op://Starforge Deployment/1password-connect/access_token" | base64 | tr -d '\n')
+creds=$(op read --no-newline "op://Starforge Deployment/1password-connect/1password-credentials.json" | base64 | tr -d '\n')
+
+cat <<EOF | apply
+apiVersion: v1
+kind: Secret
+metadata:
+  name: onepassword-connect-secret
+  namespace: secrets
+type: Opaque
+data:
+  token: $token
+  1password-credentials.json: $creds
+EOF
+
+echo "==> Creating the Flux git deploy key"
+keydir=$(mktemp -d)
+trap 'rm -rf "$keydir"' EXIT
+ssh-keygen -t ed25519 -N "" -C "flux-$cluster" -f "$keydir/identity" -q
+gh repo deploy-key add "$keydir/identity.pub" --repo starforgefoundry/infra --title "flux-$cluster"
+
+cat <<EOF | apply
+apiVersion: v1
+kind: Secret
+metadata:
+  name: flux-system
+  namespace: flux-system
+type: Opaque
+data:
+  identity: $(base64 < "$keydir/identity" | tr -d '\n')
+  identity.pub: $(base64 < "$keydir/identity.pub" | tr -d '\n')
+  known_hosts: $(ssh-keyscan github.com 2>/dev/null | base64 | tr -d '\n')
+EOF
+
+echo "==> Installing flux-operator"
+version=$(awk '/^    tag:/ {print $2}' "$chart")
+helm template flux-operator oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator \
+  --version "$version" --namespace flux-system | apply_in flux-system
+
+echo "==> Applying the FluxInstance for $cluster"
+ssh "$remote" 'sudo k3s kubectl wait --for=condition=Available \
+  deploy/flux-operator -n flux-system --timeout=5m'
+sed "s|\${CLUSTER}|$cluster|g" "$instance" | apply_in flux-system
+
+echo "==> $cluster bootstrapped; Flux will now reconcile kubernetes/clusters/$cluster"
+'''
+
+[tasks."cluster:shutdown"]
+usage = '''
+arg "cluster"
+arg "user" default="starforge"
+'''
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+
+k() { kubectl --context "$usage_cluster" "$@"; }
+on_node() { ssh -o BatchMode=yes -o ConnectTimeout=5 "$usage_user@$1" "${@:2}"; }
+names() { k get nodes "$@" -o jsonpath='{.items[*].metadata.name}'; }
+
+# "!=" also matches nodes carrying no starforgefoundry.com/role label at all
+nas=$(names -l starforgefoundry.com/role=nas)
+order="$(names -l 'starforgefoundry.com/role!=nas') $nas"
+
+echo "==> $usage_cluster power-off order: $order"
+read -r -p "    Shut these nodes down? [y/N] " reply
+[[ "$reply" == [yY]* ]] || exit 1
+
+etcd_node=$(names -l node-role.kubernetes.io/etcd=true | awk '{print $1}')
+if [ -n "$etcd_node" ]; then
+  echo "==> Taking an etcd snapshot on $etcd_node"
+  on_node "$etcd_node" 'sudo k3s etcd-snapshot save'
+fi
+
+echo "==> Suspending Flux and cordoning nodes"
+flux --context "$usage_cluster" suspend source git flux-system -n flux-system
+k cordon $order
+
+for node in $order; do
+  echo "==> Powering off $node"
+  on_node "$node" 'sudo systemctl poweroff' || true
+  while on_node "$node" true 2>/dev/null; do sleep 5; done
+  echo "    $node is down"
+done
+
+echo "==> $usage_cluster is down. Power ${nas:-the nodes} on first, then: mise run cluster:startup $usage_cluster"
+'''
+
+[tasks."cluster:startup"]
+usage = '''
+arg "cluster"
+'''
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+
+k() { kubectl --context "$usage_cluster" "$@"; }
+
+echo "==> Waiting for the $usage_cluster API server"
+until k get --raw /readyz >/dev/null 2>&1; do sleep 5; done
+
+echo "==> Waiting for nodes to be Ready"
+k wait --for=condition=Ready nodes --all --timeout=15m
+
+echo "==> Waiting for miroir volumes to resync"
+k wait --for=jsonpath='{.status.phase}'=Ready miroirvolumes --all -A --timeout=30m >/dev/null
+
+split=$(k get miroirvolumes -A -o json |
+  jq -r '.items[] | select([.status.perNode[]?.splitBrain] | any) | .metadata.name')
+if [ -n "$split" ]; then
+  echo "!!! split brain, resolve before resuming Flux:"
+  echo "$split"
+  exit 1
+fi
+
+echo "==> Uncordoning nodes and resuming Flux"
+k uncordon $(k get nodes -o jsonpath='{.items[*].metadata.name}')
+flux --context "$usage_cluster" resume source git flux-system -n flux-system
+
+k get nodes
+'''
+
+# Copies a host directory from the Docker deployment into an app's PVC. Suspend
+# the app's Flux Kustomization and scale it to 0 first so nothing holds the volume.
+[tasks."migrate:pvc"]
+usage = '''
+arg "namespace"
+arg "claim"
+arg "source" help="Host directory on starforge-server, e.g. /storage/hass"
+arg "context" default="shop"
+'''
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+
+job="migrate-$usage_claim"
+k() { kubectl --context "$usage_context" -n "$usage_namespace" "$@"; }
+
+cat <<EOF | k apply -f -
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: $job
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 3600
+  template:
+    spec:
+      restartPolicy: Never
+      nodeSelector:
+        kubernetes.io/hostname: starforge-server
+      containers:
+        - name: rsync
+          image: docker.io/library/alpine:3.22
+          command:
+            - sh
+            - -c
+            - apk add --no-cache rsync && rsync -aHAX --numeric-ids --info=stats2 /src/ /dst/
+          volumeMounts:
+            - name: src
+              mountPath: /src
+              readOnly: true
+            - name: dst
+              mountPath: /dst
+      volumes:
+        - name: src
+          hostPath:
+            path: $usage_source
+            type: Directory
+        - name: dst
+          persistentVolumeClaim:
+            claimName: $usage_claim
+EOF
+
+k wait --for=condition=complete "job/$job" --timeout=1h
+k logs "job/$job"
+'''
+
+# Lists every record in the zone with the "<zone_id>/<record_id>" import ID that
+# tofu/config/dns.tf needs.
+[tasks."tofu:dns-export"]
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+
+token=$(op read --no-newline "op://Starforge Deployment/infra-tofu-credentials/cloudflare/api_token")
+api() { curl -fsS -H "Authorization: Bearer $token" "https://api.cloudflare.com/client/v4/$1"; }
+
+zone=$(api "zones?name=starforgefoundry.com" | jq -r '.result[0].id')
+api "zones/$zone/dns_records?per_page=5000" |
+  jq -r --arg zone "$zone" '.result[] |
+    [$zone + "/" + .id, .type, .name, (.proxied | tostring), (.ttl | tostring), (.priority // "" | tostring), .content] | @tsv'
+'''

@@ -8,10 +8,13 @@
     ./hardware-configuration.nix
     ./disk-config.nix
     ../../lib/base-packages.nix
+    ../../lib/beszel.nix
     ../../lib/starforge.nix
     ../../lib/docker.nix
     ../../lib/garbage-collect.nix
     ../../lib/tailscale.nix
+    ../../lib/k3s.nix
+    ../../lib/miroir.nix
   ];
 
   system.stateVersion = "25.11";
@@ -48,9 +51,12 @@
   services.openssh.settings.PasswordAuthentication = false;
 
   services.tailscale.ip = "100.121.137.68";
+  services.tailscale.extraUpFlags = [
+    "--advertise-tags=tag:shop,tag:nixos"
+  ];
   services.tailscale.extraSetFlags = [
     "--advertise-exit-node"
-    "--advertise-routes=10.0.10.0/24"
+    "--advertise-routes=10.0.10.0/24,10.0.60.0/24"
   ];
 
   # mergerfs
@@ -107,8 +113,4 @@
 
   services.beszel.hub.enable = true;
   services.beszel.hub.host = "0.0.0.0";
-  services.beszel.agent.enable = true;
-  services.beszel.agent.environment = {
-    "KEY" = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBnpRjTrh0PBJNKpXL6Xao+a1n6rHxIZ/wIgxY0hJwhN";
-  };
 }

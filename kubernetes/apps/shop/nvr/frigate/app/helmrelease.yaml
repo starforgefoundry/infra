@@ -1,0 +1,132 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: frigate
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: frigate
+  values:
+    controllers:
+      main:
+        strategy: Recreate
+        annotations:
+          reloader.stakater.com/auto: 'true'
+        pod:
+          terminationGracePeriodSeconds: 30
+        # Frigate rewrites its config on upgrades and UI edits, so it gets a
+        # writable copy of the one in git on every start.
+        initContainers:
+          config:
+            image:
+              repository: docker.io/library/busybox
+              tag: '1.37'
+            command:
+              - cp
+              - /config-src/config.yml
+              - /config/config.yml
+        containers:
+          main:
+            image:
+              repository: ghcr.io/blakeblackshear/frigate
+              tag: '0.18.0'
+            env:
+              TZ: America/Chicago
+            envFrom:
+              - secretRef:
+                  name: frigate
+            # go2rtc's RTSP restream and WebRTC are dialled on the node's LAN and
+            # tailnet addresses, which are the WebRTC candidates in config.yml.
+            ports:
+              - name: rtsp
+                containerPort: 8554
+                hostPort: 8554
+                protocol: TCP
+              - name: webrtc-tcp
+                containerPort: 8555
+                hostPort: 8555
+                protocol: TCP
+              - name: webrtc-udp
+                containerPort: 8555
+                hostPort: 8555
+                protocol: UDP
+            resources:
+              requests:
+                cpu: 500m
+                memory: 2Gi
+              limits:
+                memory: 8Gi
+                gpu.intel.com/i915: '1'
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/version
+                    port: 5000
+                  timeoutSeconds: 5
+                  periodSeconds: 10
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/version
+                    port: 5000
+                  initialDelaySeconds: 10
+                  periodSeconds: 10
+                  failureThreshold: 30
+
+    defaultPodOptions:
+      nodeSelector:
+        kubernetes.io/hostname: starforge-server
+
+    service:
+      main:
+        controller: main
+        ports:
+          http:
+            port: 8971
+          internal:
+            port: 5000
+
+    persistence:
+      config:
+        type: emptyDir
+        advancedMounts:
+          main:
+            config:
+              - path: /config
+            main:
+              - path: /config
+      config-src:
+        type: configMap
+        name: frigate-config
+        advancedMounts:
+          main:
+            config:
+              - path: /config-src
+      db:
+        existingClaim: frigate-db
+        globalMounts:
+          - path: /db
+      recordings:
+        existingClaim: frigate-recordings
+        globalMounts:
+          - path: /media/frigate
+      shm:
+        type: emptyDir
+        medium: Memory
+        sizeLimit: 4Gi
+        globalMounts:
+          - path: /dev/shm
+      cache:
+        type: emptyDir
+        medium: Memory
+        sizeLimit: 1Gi
+        globalMounts:
+          - path: /tmp/cache

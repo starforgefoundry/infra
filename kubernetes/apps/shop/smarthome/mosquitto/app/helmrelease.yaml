@@ -1,0 +1,70 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: mosquitto
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: mosquitto
+  values:
+    controllers:
+      main:
+        strategy: Recreate
+        annotations:
+          reloader.stakater.com/auto: 'true'
+        containers:
+          main:
+            image:
+              repository: docker.io/library/eclipse-mosquitto
+              tag: '2.0.22'
+            resources:
+              requests:
+                cpu: 10m
+                memory: 32Mi
+              limits:
+                memory: 128Mi
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: 1883
+                  timeoutSeconds: 5
+                  periodSeconds: 10
+                  failureThreshold: 3
+              readiness: *probes
+
+    defaultPodOptions:
+      # Shop devices dial 1883 on the server's LAN address, so the broker takes
+      # the node's own port rather than a NodePort. That pins it to one node,
+      # hence Recreate.
+      hostNetwork: true
+      nodeSelector:
+        kubernetes.io/hostname: starforge-server
+      securityContext:
+        runAsUser: 1883
+        runAsGroup: 1883
+        runAsNonRoot: true
+        fsGroup: 1883
+        fsGroupChangePolicy: OnRootMismatch
+
+    service:
+      main:
+        controller: main
+        ports:
+          mqtt:
+            port: 1883
+
+    persistence:
+      data:
+        existingClaim: mosquitto-data
+        globalMounts:
+          - path: /mosquitto/data
+      config:
+        type: configMap
+        name: mosquitto-config
+        globalMounts:
+          - path: /mosquitto/config/mosquitto.conf
+            subPath: mosquitto.conf

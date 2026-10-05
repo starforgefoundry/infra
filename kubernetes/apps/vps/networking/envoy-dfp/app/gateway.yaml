@@ -1,0 +1,91 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+  name: envoy-dfp
+spec:
+  controllerName: gateway.envoyproxy.io/gatewayclass-controller
+  parametersRef:
+    group: gateway.envoyproxy.io
+    kind: EnvoyProxy
+    name: envoy-dfp
+    namespace: networking
+
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: EnvoyProxy
+metadata:
+  name: envoy-dfp
+  namespace: networking
+spec:
+  provider:
+    type: Kubernetes
+    kubernetes:
+      envoyService:
+        type: ClusterIP
+        patch:
+          type: StrategicMerge
+          value:
+            spec:
+              externalIPs:
+                - ${VPS_PUBLIC_IPV4}
+      envoyDeployment:
+        replicas: 1
+        # The dynamic resolver has to see the split-horizon view of
+        # starforgefoundry.com, so bind9 answers for these pods instead of
+        # CoreDNS. It is deliberately the only nameserver: resolv.conf falls
+        # through on timeout, and a fallback would answer from the public
+        # wildcard - which points back at this proxy, turning an outage into an
+        # SNI loop. bind9 relays cluster.local (needed for xDS) and
+        # tail04f5a4.ts.net on to CoreDNS itself.
+        patch:
+          type: StrategicMerge
+          value:
+            spec:
+              template:
+                spec:
+                  dnsPolicy: None
+                  dnsConfig:
+                    nameservers:
+                      - 10.43.148.53
+                    searches:
+                      - networking.svc.cluster.local
+                      - svc.cluster.local
+                      - cluster.local
+                    # ndots:5 would walk every search domain before trying the
+                    # hostname the client actually asked for.
+                    options:
+                      - name: ndots
+                        value: '1'
+
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: envoy-dfp
+  namespace: networking
+  annotations:
+    external-dns.kubernetes.io/controller: none
+spec:
+  gatewayClassName: envoy-dfp
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      hostname: '*.starforgefoundry.com'
+      allowedRoutes:
+        namespaces:
+          from: Same
+    # Passthrough, so nothing is decrypted here: the origin serves its own
+    # starforgefoundry-com-tls and the client validates it end to end. The
+    # hostname is the SNI match, and the SNI is also what the dynamic resolver
+    # forwards to.
+    - name: tls
+      protocol: TLS
+      port: 443
+      hostname: '*.starforgefoundry.com'
+      allowedRoutes:
+        namespaces:
+          from: Same
+      tls:
+        mode: Passthrough

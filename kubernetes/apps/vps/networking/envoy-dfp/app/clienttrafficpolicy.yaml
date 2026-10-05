@@ -1,0 +1,16 @@
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: ClientTrafficPolicy
+metadata:
+  name: dfp-client-tuning
+  namespace: networking
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: envoy-dfp
+  # Passthrough is a raw TCP relay, so there is no HTTP/2 window or HTTP/3 codec
+  # left to size here. All that remains is Envoy Gateway's 32Ki userspace buffer,
+  # which meters a gigabit relay; the kernel socket buffers absorb the BDP.
+  connection:
+    bufferLimit: 1Mi
