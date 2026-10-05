@@ -4,4 +4,5 @@ kind: Kustomization
 resources:
   - ocirepository.yaml
   - postgres.yaml
+  - backup.yaml
   - helmrelease.yaml

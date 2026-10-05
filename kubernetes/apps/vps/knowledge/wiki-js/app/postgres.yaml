@@ -9,6 +9,11 @@ spec:
     initdb:
       database: wiki
       owner: wiki
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
+      parameters:
+        barmanObjectName: wiki-js-db-r2
   storage:
     size: 5Gi
     storageClass: miroir
