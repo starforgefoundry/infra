@@ -8,7 +8,7 @@ spec:
     registry: ghcr.io/fluxcd
   cluster:
     type: kubernetes
-    size: small
+    size: medium
   components:
     - source-controller
     - kustomize-controller
