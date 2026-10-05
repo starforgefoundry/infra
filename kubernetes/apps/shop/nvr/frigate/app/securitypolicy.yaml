@@ -13,6 +13,8 @@ spec:
   oidc:
     provider:
       issuer: https://accounts.google.com
+      # Google only issues a refresh token with access_type=offline
+      authorizationEndpoint: https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&prompt=consent
     clientIDRef:
       name: frigate-oidc
     clientSecret:
@@ -23,6 +25,8 @@ spec:
     # Already registered on the Google OAuth client
     redirectURL: https://cam.starforgefoundry.com/_oauth/callback
     logoutPath: /_oauth/logout
+    refreshToken: true
+    defaultRefreshTokenTTL: 2160h
     cookieNames:
       idToken: frigate-id-token
       accessToken: frigate-access-token
