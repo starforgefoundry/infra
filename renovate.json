@@ -1,24 +1,36 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended", ":dependencyDashboard"],
-  "baseBranchPatterns": ["main"],
-  "docker-compose": {
-    "managerFilePatterns": ["/^compose/.*\\.ya?ml$/"],
-    "digest": {
-      "enabled": false
-    }
-  },
-  "enabledManagers": ["docker-compose"],
+  "extends": ["github>home-operations/renovate-presets"],
   "packageRules": [
     {
       "matchUpdateTypes": ["minor", "patch"],
       "automerge": true
     },
     {
+      "matchUpdateTypes": ["major", "minor", "patch"],
+      "semanticCommitType": "chore"
+    },
+    {
       "matchPackageNames": ["ghcr.io/blakeblackshear/frigate"],
       "matchUpdateTypes": ["patch"],
       "automerge": true,
       "automergeType": "pr"
+    },
+    // External-DNS maintainers seem to love https://0ver.org/ and enjoy
+    // releasing large breaking changes in a minor release. This shit is
+    // required to keep their updates from taking everything down.
+    {
+      "matchPackageNames": [
+        "ghcr.io/home-operations/charts-mirror/external-dns"
+      ],
+      "matchUpdateTypes": ["minor"],
+      "automerge": false
+    },
+
+    // Groups
+    {
+      "matchFileNames": ["**/flux-system/**"],
+      "groupName": "fluxcd"
     }
   ],
   "ignoreTests": true

@@ -338,9 +338,9 @@ All in the `Starforge Deployment` 1Password vault unless noted.
 
 ### 5. Shop cluster (`shop`)
 
-- [ ] 5.1 `mise run nixos:switch shop-server`. k3s enables the system
+- [x] 5.1 `mise run nixos:switch shop-server`. k3s enables the system
       containerd, which may restart the Docker containers.
-- [ ] 5.2 `tailscale up --advertise-tags=tag:shop,tag:nixos` on the server.
+- [x] 5.2 `tailscale up --advertise-tags=tag:shop,tag:nixos` on the server.
 - [ ] 5.3 `mise run bootstrap shop-server shop`.
 - [ ] 5.4 Confirm `shop-ingress` is reachable through the VPS DFP.
 
@@ -381,7 +381,7 @@ Traefik until each app is verified, then flip.
 - [ ] 8.2 Remove `lib/docker.nix` from `shop-server`; drop `ansible` and
       `just` from `mise.toml`.
 - [ ] 8.3 Add `.github/workflows/images.yml` for `apps/frigate-oauth`.
-- [ ] 8.4 Adopt homelab's `renovate.json` (home-operations presets, fluxcd
+- [x] 8.4 Adopt homelab's `renovate.json` (home-operations presets, fluxcd
       grouping).
 - [ ] 8.5 Rewrite `README.md` on homelab's structure.
 
