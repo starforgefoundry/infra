@@ -1,7 +1,9 @@
 name: Tofu
 
-# Manual only until the zone import plans empty; then add the push trigger back.
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 concurrency:

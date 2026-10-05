@@ -334,7 +334,7 @@ All in the `Starforge Deployment` 1Password vault unless noted.
 - [x] 4.4 `tofu apply`, then tag the VPS: `sudo tailscale up --advertise-tags=tag:vps,tag:nixos`.
 - [x] 4.5 Set `public_ingress_enabled = true` in `dns.tf`, apply, and test the
       DFP end to end with a throwaway route.
-- [ ] 4.6 Restore the push trigger in `tofu.yml`.
+- [x] 4.6 Restore the push trigger in `tofu.yml`.
 
 ### 5. Shop cluster (`shop`)
 
