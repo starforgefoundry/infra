@@ -110,7 +110,4 @@
       Persistent = true;
     };
   };
-
-  services.beszel.hub.enable = true;
-  services.beszel.hub.host = "0.0.0.0";
 }

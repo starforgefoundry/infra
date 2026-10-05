@@ -349,20 +349,20 @@ Per app: `docker compose stop <svc>`, suspend the app's Flux Kustomization,
 Traefik until each app is verified, then flip.
 
 - [x] 6.1 `mosquitto` — dropped, unused.
-- [ ] 6.2 `matter-server` — `smarthome matter-server-data /storage/matter`.
-- [ ] 6.3 `home-assistant` — `smarthome home-assistant-config /storage/hass`.
+- [x] 6.2 `matter-server` — `smarthome matter-server-data /storage/matter`.
+- [x] 6.3 `home-assistant` — `smarthome home-assistant-config /storage/hass`.
       Switch the dongle to its `/dev/serial/by-id/` path first. Verify Zigbee and
       OpenID login. Repoint the Frigate integration to
       `frigate.nvr.svc.cluster.local:5000`.
-- [ ] 6.4 `bambuddy` — `printing bambuddy-data /storage/bambuddy` (holds
+- [x] 6.4 `bambuddy` — `printing bambuddy-data /storage/bambuddy` (holds
       `data/` and `logs/`). Verify SSDP discovery from a slicer on the shop LAN.
-- [ ] 6.5 `frigate` — `nvr frigate-db /storage/frigate`.
+- [x] 6.5 `frigate` — `nvr frigate-db /storage/frigate`.
       Verify GPU detection, recordings under `/mnt/nvr-storage`, WebRTC playback,
       the Google login flow.
-- [ ] 6.6 `bwees-subnet-router` —
+- [x] 6.6 `bwees-subnet-router` —
       `networking bwees-subnet-router-state /storage/bwees-sr`; stop
       `printer-subnet-router`.
-- [ ] 6.7 beszel hub — move `/var/lib/beszel-hub` from `shop-server` into
+- [x] 6.7 beszel hub — move `/var/lib/beszel-hub` from `shop-server` into
       `beszel-data` on the VPS, then drop `services.beszel.hub` from the server.
 
 ### 7. Cutover
