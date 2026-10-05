@@ -318,20 +318,20 @@ All in the `Starforge Deployment` 1Password vault unless noted.
 - [x] 3.1 Order the Contabo VPS (`194.238.28.254`, St. Louis).
 - [x] 3.2 `nixos-anywhere` onto the VPS; node has ExternalIP `194.238.28.254`.
 - [x] 3.3 VPS joined the tailnet as a regular device; `tag:vps` does not exist until 4.4.
-- [ ] 3.4 `mise run bootstrap starforge-vps vps`.
-- [ ] 3.5 Verify bind9, envoy-dfp, envoy-ingress and `vps-ingress` are up.
+- [x] 3.4 `mise run bootstrap starforge-vps vps`.
+- [x] 3.5 Verify bind9, envoy-dfp, envoy-ingress and `vps-ingress` are up.
 
 ### 4. OpenTofu
 
-- [ ] 4.1 Put the Contabo instance ID in `tofu/config/imports.tf`.
-- [ ] 4.2 `mise run tofu:dns-export`; fill `dns_record_ids` in
+- [x] 4.1 Put the Contabo instance ID in `tofu/config/imports.tf`.
+- [x] 4.2 `mise run tofu:dns-export`; fill `dns_record_ids` in
       `tofu/config/dns.tf` and add any record missing from `dns_records`
       (Mailgun, static LAN).
-- [ ] 4.3 `tofu plan` until the only changes are new resources (tokens, R2
+- [x] 4.3 `tofu plan` until the only changes are new resources (tokens, R2
       bucket, 1Password items, webhooks). Read the Tailscale ACL diff: the module
       replaces the current policy. **Do not apply a plan that modifies or
       destroys an imported DNS record.**
-- [ ] 4.4 `tofu apply`, then tag the VPS: `sudo tailscale up --advertise-tags=tag:vps,tag:nixos`.
+- [x] 4.4 `tofu apply`, then tag the VPS: `sudo tailscale up --advertise-tags=tag:vps,tag:nixos`.
 - [ ] 4.5 Set `public_ingress_enabled = true` in `dns.tf`, apply, and test the
       DFP end to end with a throwaway route.
 - [ ] 4.6 Restore the push trigger in `tofu.yml`.

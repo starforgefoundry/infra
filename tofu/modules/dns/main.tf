@@ -8,6 +8,7 @@ resource "cloudflare_dns_record" "this" {
   ttl      = each.value.ttl
   proxied  = each.value.proxied
   priority = each.value.priority
+  comment  = each.value.comment
 }
 
 // Explicit records win over the wildcard, so the website and anything else in
@@ -22,4 +23,28 @@ resource "cloudflare_dns_record" "wildcard" {
   comment = "Public ingress on starforge-vps. Managed by Tofu."
   proxied = false
   ttl     = 300
+}
+
+// The zone has one Redirect Rules entrypoint, so this owns every rule in it.
+resource "cloudflare_ruleset" "redirects" {
+  zone_id = var.zone_id
+  name    = "default"
+  kind    = "zone"
+  phase   = "http_request_dynamic_redirect"
+
+  rules = [for key, redirect in var.redirects : {
+    ref         = key
+    description = key
+    expression  = "(http.host eq \"${redirect.host}\")"
+    action      = "redirect"
+    action_parameters = {
+      from_value = {
+        status_code           = 301
+        preserve_query_string = true
+        target_url = {
+          value = redirect.target
+        }
+      }
+    }
+  }]
 }
