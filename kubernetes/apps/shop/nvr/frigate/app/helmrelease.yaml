@@ -94,6 +94,15 @@ spec:
             port: 8971
           internal:
             port: 5000
+      # Tailnet device for on-site displays, skipping the public VPS
+      tailnet:
+        controller: main
+        annotations:
+          tailscale.com/expose: 'true'
+          tailscale.com/hostname: cam
+        ports:
+          http:
+            port: 8971
 
     route:
       main:
