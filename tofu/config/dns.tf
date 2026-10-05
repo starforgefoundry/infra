@@ -8,8 +8,7 @@
 //   - bambu-connect, cam, hass, print: Cloudflare Tunnel CNAMEs, deleted by
 //     hand with the tunnel at cutover
 locals {
-  // Flip once the imported records plan clean.
-  public_ingress_enabled = false
+  public_ingress_enabled = true
 
   // Each host also needs a proxied record in dns_records for the rule to see it.
   dns_redirects = {
