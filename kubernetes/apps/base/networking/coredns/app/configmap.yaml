@@ -1,0 +1,16 @@
+---
+# k3s imports *.server keys from this ConfigMap into its CoreDNS. Without this,
+# tailnet names only resolve if the node's resolv.conf pointed at Tailscale
+# when CoreDNS started.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: coredns-custom
+  namespace: kube-system
+data:
+  tailnet.server: |
+    tail04f5a4.ts.net:53 {
+        errors
+        cache 30
+        forward . 100.100.100.100
+    }
