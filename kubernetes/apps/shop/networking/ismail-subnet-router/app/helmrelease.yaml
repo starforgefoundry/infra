@@ -1,0 +1,47 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: ismail-subnet-router
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: ismail-subnet-router
+  values:
+    controllers:
+      main:
+        strategy: Recreate
+        containers:
+          main:
+            image:
+              repository: tailscale/tailscale
+              tag: 'v1.102.5'
+            # The node itself joins the starforge tailnet, so the printer VLAN is
+            # advertised into the personal tailnet from this pod instead.
+            env:
+              TZ: America/Chicago
+              TS_USERSPACE: 'true'
+              TS_EXTRA_ARGS: '--reset --advertise-routes=10.0.60.0/24 --hostname=sf-subnet-router'
+              TS_STATE_DIR: /var/lib/tailscale
+              TS_KUBE_SECRET: ''
+              TS_ACCEPT_DNS: 'false'
+            resources:
+              requests:
+                cpu: 25m
+                memory: 64Mi
+              limits:
+                memory: 256Mi
+            # No Service to probe against
+            probes:
+              liveness:
+                enabled: false
+              readiness:
+                enabled: false
+              startup:
+                enabled: false
+
+    persistence:
+      state:
+        existingClaim: ismail-subnet-router-state
+        globalMounts:
+          - path: /var/lib/tailscale
