@@ -17,7 +17,7 @@ jobs:
       images: ${{ steps.changes.outputs.images }}
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
 
       - uses: dorny/paths-filter@0e4a8c6effa4802afeda77dc8d303f8176d7dfad # v3.0.4
         id: changes
@@ -35,7 +35,7 @@ jobs:
     if: needs.detect-changes.outputs.images == 'true'
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
 
       - uses: jdx/mise-action@v3
 
