@@ -103,7 +103,7 @@ spec:
             readOnly: true
       zigbee:
         type: hostPath
-        hostPath: /dev/ttyUSB0
+        hostPath: /dev/serial/by-id/usb-Itead_Sonoff_Zigbee_3.0_USB_Dongle_Plus_V2_0a6fd044e5c2ef119d40ecb08048b910-if00-port0
         hostPathType: CharDevice
         globalMounts:
           - path: /dev/ttyUSB0
