@@ -33,6 +33,17 @@ in
     ];
   };
 
+  # CoreDNS copies the node's resolv.conf when it starts, so it only resolves
+  # tailnet names if Tailscale DNS is already in place. Gives up after a minute
+  # so a tailnet outage cannot hold the cluster down.
+  systemd.services.k3s = {
+    after = [ "tailscaled.service" ];
+    wants = [ "tailscaled.service" ];
+    serviceConfig.ExecStartPre = [
+      "-${pkgs.coreutils}/bin/timeout 60 ${pkgs.bash}/bin/sh -c 'until ${pkgs.gnugrep}/bin/grep -q 100.100.100.100 /etc/resolv.conf; do sleep 1; done'"
+    ];
+  };
+
   services.rpcbind.enable = true;
   boot.supportedFilesystems = [ "nfs" ];
 
