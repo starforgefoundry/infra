@@ -306,7 +306,7 @@ All in the `Starforge Deployment` 1Password vault unless noted.
 - [x] 2.6 Copy from the Ansible item `m5bkirljj5u3hx7cum5aza46py`:
   - `frigate` — `FRIGATE_TAPO_PASSWORD`, `FRIGATE_TAPO_CLOUD_PASSWORD`
   - `gauth` — `GAUTH_CLIENT_ID`, `GAUTH_CLIENT_SECRET`
-  - `frigate-oauth` — `AUTH_SECRET`
+  - `frigate-oauth` — `AUTH_SECRET` (archived; replaced by Envoy OIDC)
 - [x] 2.7 `tofu/.env`: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`,
       `OP_ACCOUNT`. GitHub repo secrets: the same AWS vars plus
       `OP_SERVICE_ACCOUNT_TOKEN`.
