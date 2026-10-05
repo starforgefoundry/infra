@@ -4,3 +4,4 @@ kind: Kustomization
 namespace: operators
 resources:
   - cloudnative-pg/ks.yaml
+  - plugin-barman-cloud/ks.yaml
