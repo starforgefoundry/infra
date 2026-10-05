@@ -95,6 +95,18 @@ spec:
           internal:
             port: 5000
 
+    route:
+      main:
+        parentRefs:
+          - name: envoy-ingress
+            namespace: networking
+        hostnames:
+          - cam.starforgefoundry.com
+        rules:
+          - backendRefs:
+              - identifier: main
+                port: 8971
+
     persistence:
       config:
         type: emptyDir
@@ -111,6 +123,18 @@ spec:
           main:
             config:
               - path: /config-src
+      # Frigate's nginx.conf hardcodes the access log with no config toggle,
+      # so an s6 init script turns it off before nginx starts.
+      scripts:
+        type: configMap
+        name: frigate-scripts
+        defaultMode: 0755
+        advancedMounts:
+          main:
+            main:
+              - path: /etc/cont-init.d/disable-access-log.sh
+                subPath: disable-access-log.sh
+                readOnly: true
       db:
         existingClaim: frigate-db
         globalMounts:
