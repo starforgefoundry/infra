@@ -198,15 +198,15 @@ website and `orion` keep working once the wildcard lands.
 | Frigate recordings          | `/mnt/nvr-storage` mergerfs | Static hostPath PV (mergerfs + nightly migrate timer stay in NixOS) |
 | Frigate DB                  | `/storage/frigate`          | `miroir` PVC                                                        |
 | Home Assistant config       | `/storage/hass`             | `miroir` PVC + ConfigMap for `configuration.yaml`                   |
-| Mosquitto, matter, bambuddy | `/storage/*`                | `miroir` PVCs                                                       |
+| Matter, bambuddy            | `/storage/*`                | `miroir` PVCs                                                       |
 
 `miroir` with 1 replica on each single-node cluster, exactly as homelab's
 `eridani`/`stepien`. Needs `lib/miroir.nix` (`loop`, `dm_thin_pool` kernel
 modules) and the `storage.miroir.home-operations.com/class: std` node label.
 
 Backups: the `volsync` component from homelab with a single nightly restic
-target, the `volsync` R2 bucket created by `modules/restic`. Mosquitto and
-bind9 are not backed up.
+target, the `volsync` R2 bucket created by `modules/restic`. bind9 is not
+backed up.
 
 ### Moving data into PVCs
 
@@ -231,7 +231,7 @@ One repeatable recipe, used for every stateful app:
 | `oauth-middleware`      | deleted                  | Replaced by an Envoy Gateway OIDC `SecurityPolicy` on the frigate route: the ID token email goes into `x-forwarded-user` and `x-forwarded-groups`, and Frigate `proxy.role_map` maps it to a role |
 | `homeassistant`         | `shop/smarthome`         | `hostNetwork` + node pin; `/dev/ttyUSB0` as a hostPath `CharDevice` (switch to a `/dev/serial/by-id/` path); `trusted_proxies` changes from `172.40.0.0/24` to the pod CIDR                                                                                                                                                 |
 | `matter-server`         | `shop/smarthome`         | Copy homelab's manifest verbatim, adjusting `--primary-interface`                                                                                                                                                                                                                                                           |
-| `mosquitto`             | `shop/smarthome`         | Copy homelab's manifest verbatim                                                                                                                                                                                                                                                                                            |
+| `mosquitto`             | deleted                  | Unused; Frigate runs with `mqtt.enabled: false` |
 | `bambuddy`              | `shop/printing`          | `hostNetwork` + node pin + `Recreate`                                                                                                                                                                                                                                                                                       |
 | `printer-subnet-router` | `shop-server` NixOS | `10.0.60.0/24` added to the node's `--advertise-routes`                                                                                                                                                                                                                                                                     |
 | `bwees-subnet-router`   | `shop/networking`        | Userspace `tailscale` pod with a `miroir` PVC for state                                                                                                                                                                                                                                                                     |
@@ -339,8 +339,8 @@ All in the `Starforge Deployment` 1Password vault unless noted.
 - [x] 5.1 `mise run nixos:switch shop-server`. k3s enables the system
       containerd, which may restart the Docker containers.
 - [x] 5.2 `tailscale up --advertise-tags=tag:shop,tag:nixos` on the server.
-- [ ] 5.3 `mise run bootstrap shop-server shop`.
-- [ ] 5.4 Confirm `shop-ingress` is reachable through the VPS DFP.
+- [x] 5.3 `mise run bootstrap shop-server shop`.
+- [x] 5.4 Confirm `shop-ingress` is reachable through the VPS DFP.
 
 ### 6. App migration
 
@@ -348,7 +348,7 @@ Per app: `docker compose stop <svc>`, suspend the app's Flux Kustomization,
 `mise run migrate:pvc <ns> <claim> <host dir>`, resume, verify. Routes stay on
 Traefik until each app is verified, then flip.
 
-- [ ] 6.1 `mosquitto` — `smarthome mosquitto-data /storage/mosquitto/data`.
+- [x] 6.1 `mosquitto` — dropped, unused.
 - [ ] 6.2 `matter-server` — `smarthome matter-server-data /storage/matter`.
 - [ ] 6.3 `home-assistant` — `smarthome home-assistant-config /storage/hass`.
       Switch the dongle to its `/dev/serial/by-id/` path first. Verify Zigbee and

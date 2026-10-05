@@ -1,7 +1,5 @@
 mqtt:
-  enabled: true
-  host: mosquitto.smarthome.svc.cluster.local
-  port: 1883
+  enabled: false
 
 auth:
   enabled: false
