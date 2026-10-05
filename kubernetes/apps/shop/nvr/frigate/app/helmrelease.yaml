@@ -79,7 +79,8 @@ spec:
                     port: 5000
                   initialDelaySeconds: 10
                   periodSeconds: 10
-                  failureThreshold: 30
+                  # startup runs a database vacuum, which takes minutes on a large DB
+                  failureThreshold: 90
 
     defaultPodOptions:
       nodeSelector:
