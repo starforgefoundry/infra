@@ -17,7 +17,7 @@ spec:
           migrate:
             image: &image
               repository: ghcr.io/starforgefoundry/orion
-              tag: sha-35af281
+              tag: sha-9f4b7c1
             command: ['node', 'scripts/migrate.ts']
             env:
               DATABASE_URL: &databaseUrl
@@ -30,9 +30,12 @@ spec:
             image: *image
             env:
               DATABASE_URL: *databaseUrl
-              ORIGIN: https://orion.starforgefoundry.com
+              ORIGIN: &url https://orion.starforgefoundry.com
+              FRONTEND_URL: *url
               # Must be at least the print request upload limit in settings
               BODY_SIZE_LIMIT: 1G
+              PUBLIC_PRINT_REQUEST_EMAIL: 3dprint@starforgefoundry.com
+              SQUARE_URL: https://connect.squareup.com
             envFrom:
               - secretRef:
                   name: orion
