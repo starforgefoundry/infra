@@ -2,7 +2,6 @@
 // records are managed by hand in Cloudflare.
 //
 // Not here on purpose:
-//   - orion: a Worker custom domain, owned by the Worker
 //   - orion-data: an R2 custom domain, owned by the bucket
 locals {
   public_ingress_enabled = true
