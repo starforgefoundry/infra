@@ -1,0 +1,56 @@
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: orion-db-r2
+spec:
+  refreshInterval: 24h
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: onepassword
+  target:
+    name: orion-db-r2
+    template:
+      data:
+        ACCESS_KEY_ID: '{{ .access_key_id }}'
+        ACCESS_SECRET_KEY: '{{ .secret_access_key }}'
+  dataFrom:
+    - extract:
+        key: restic-r2
+
+---
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: orion-db-r2
+spec:
+  retentionPolicy: 30d
+  configuration:
+    destinationPath: s3://volsync/${CLUSTER}/postgres
+    endpointURL: https://58deea9a6c523e2f0bcea4d2bc0b81de.r2.cloudflarestorage.com
+    s3Credentials:
+      accessKeyId:
+        name: orion-db-r2
+        key: ACCESS_KEY_ID
+      secretAccessKey:
+        name: orion-db-r2
+        key: ACCESS_SECRET_KEY
+    data:
+      compression: gzip
+    wal:
+      compression: gzip
+
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: orion-db-nightly
+spec:
+  # CNPG cron has a leading seconds field
+  schedule: '0 0 3 * * *'
+  backupOwnerReference: self
+  cluster:
+    name: orion-db
+  method: plugin
+  pluginConfiguration:
+    name: barman-cloud.cloudnative-pg.io

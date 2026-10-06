@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: orion-data
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: miroir
+  resources:
+    requests:
+      storage: 10Gi
