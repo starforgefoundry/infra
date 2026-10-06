@@ -6,5 +6,6 @@ resources:
   - gatewayclass.yaml
   - gateway.yaml
   - https-redirect.yaml
+  - misdirected-request.yaml
   - backendtrafficpolicy.yaml
   - clienttrafficpolicy.yaml
