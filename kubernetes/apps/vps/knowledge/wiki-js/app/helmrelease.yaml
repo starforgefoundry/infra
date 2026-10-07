@@ -14,11 +14,11 @@ spec:
           main:
             image:
               repository: ghcr.io/requarks/wiki
-              tag: '2.5.316'
+              tag: "2.5.316"
             env:
               DB_TYPE: postgres
               DB_HOST: wiki-js-db-rw
-              DB_PORT: '5432'
+              DB_PORT: "5432"
               DB_NAME:
                 valueFrom:
                   secretKeyRef:
@@ -67,7 +67,7 @@ spec:
           - name: envoy-ingress
             namespace: networking
         hostnames:
-          - wiki-staging.starforgefoundry.com
+          - wiki.starforgefoundry.com
         rules:
           - backendRefs:
               - identifier: main
