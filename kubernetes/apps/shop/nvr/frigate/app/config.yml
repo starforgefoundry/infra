@@ -60,9 +60,11 @@ go2rtc:
       - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.95
     shop_worktables_cam_sub:
       - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.95:554/stream2
-    # print_room_cam:
-    #   - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.89:554/stream1
-    #   - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.89
+    car_bay_cam:
+      - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.89:554/stream1
+      - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.89
+    car_bay_cam_sub:
+      - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.89:554/stream2
     lobby_couches_cam:
       - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.97:554/stream1
       - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.97
@@ -88,9 +90,11 @@ go2rtc:
       - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.149
     woodworking_area_cam_sub:
       - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.149:554/stream2
-    # back_alley_cam:
-    #   - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.219:554/stream1
-    #   - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.219
+    back_pad_cam:
+      - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.219:554/stream1
+      - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.219
+    back_pad_cam_sub:
+      - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.219:554/stream2
 
     # ---- Hiseeu wireless NVR @ 10.0.50.46 ----
     # chN_M.264 -> N = channel number - 1 (zero based), M = 0 main / 1 sub
@@ -114,10 +118,10 @@ go2rtc:
 
     # wireless_nvr_3:
     #   - rtsp://admin:password@10.0.50.46:80/ch3_0.264
-    back_pad_cam:
-      - rtsp://admin:password@10.0.50.46:80/ch4_0.264
-    back_pad_cam_sub:
-      - rtsp://admin:password@10.0.50.46:80/ch4_1.264
+    # back_pad_cam:
+    #   - rtsp://admin:password@10.0.50.46:80/ch4_0.264
+    # back_pad_cam_sub:
+    #   - rtsp://admin:password@10.0.50.46:80/ch4_1.264
     side_pad_cam:
       - rtsp://admin:password@10.0.50.46:80/ch5_0.264
     side_pad_cam_sub:
@@ -421,6 +425,29 @@ cameras:
       streams:
         Main: woodworking_area_cam
         Sub: woodworking_area_cam_sub
+    motion:
+      mask:
+        motion_mask_1:
+          friendly_name: Motion Mask 1
+          enabled: true
+          coordinates: 0.365,0.055,0,0.003,0,0,0.365,0
+
+  car_bay_cam:
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://127.0.0.1:8554/car_bay_cam_sub
+          input_args: preset-rtsp-restream
+          roles:
+            - detect
+        - path: rtsp://127.0.0.1:8554/car_bay_cam
+          input_args: preset-rtsp-restream
+          roles:
+            - record
+    live:
+      streams:
+        Main: car_bay_cam
+        Sub: car_bay_cam_sub
     motion:
       mask:
         motion_mask_1:
