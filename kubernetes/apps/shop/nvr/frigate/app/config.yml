@@ -638,7 +638,10 @@ camera_groups:
     cameras:
       - machining_room_cam
       - woodworking_area_cam
-      - shop_cam
       - welding_room_cam
       - back_pad_cam
       - loft_worktables_cam
+      - car_bay_cam
+      - dumpster_cam
+      - storefront_garage_cam
+      - building_side_cam
