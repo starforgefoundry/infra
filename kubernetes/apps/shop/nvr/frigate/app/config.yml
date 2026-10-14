@@ -459,6 +459,11 @@ cameras:
       streams:
         Main: side_pad_cam
         Sub: side_pad_cam_sub
+    onvif:
+      host: 10.0.50.253
+      port: 2020
+      user: starforge
+      password: '{FRIGATE_TAPO_PASSWORD}'
 
   front_lot_camera:
     enabled: true
@@ -476,6 +481,11 @@ cameras:
       streams:
         Main: front_lot_camera
         Sub: front_lot_camera_sub
+    onvif:
+      host: 10.0.50.121
+      port: 2020
+      user: starforge
+      password: '{FRIGATE_TAPO_PASSWORD}'
 
 record:
   enabled: true
