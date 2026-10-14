@@ -95,45 +95,16 @@ go2rtc:
       - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.219
     back_pad_cam_sub:
       - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.219:554/stream2
-
-    # ---- Hiseeu wireless NVR @ 10.0.50.46 ----
-    # chN_M.264 -> N = channel number - 1 (zero based), M = 0 main / 1 sub
-    # Note port 80, not 554.
-    #
-    # The NVR cannot keep up when several clients pull 2880x1620 at once: a
-    # main stream measured 0.22x realtime under load while its 800x448 sub
-    # measured 1.11x on the same connection.
-    dumpster_cam:
-      - rtsp://admin:password@10.0.50.46:80/ch0_0.264
-    dumpster_cam_sub:
-      - rtsp://admin:password@10.0.50.46:80/ch0_1.264
-    storefront_garage_cam:
-      - rtsp://admin:password@10.0.50.46:80/ch1_0.264
-    storefront_garage_cam_sub:
-      - rtsp://admin:password@10.0.50.46:80/ch1_1.264
-    building_side_cam:
-      - rtsp://admin:password@10.0.50.46:80/ch2_0.264
-    building_side_cam_sub:
-      - rtsp://admin:password@10.0.50.46:80/ch2_1.264
-
-    # wireless_nvr_3:
-    #   - rtsp://admin:password@10.0.50.46:80/ch3_0.264
-    # back_pad_cam:
-    #   - rtsp://admin:password@10.0.50.46:80/ch4_0.264
-    # back_pad_cam_sub:
-    #   - rtsp://admin:password@10.0.50.46:80/ch4_1.264
+    front_lot_camera:
+      - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.121:554/stream1
+      - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.121
+    front_lot_camera_sub:
+      - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.121:554/stream2
     side_pad_cam:
-      - rtsp://admin:password@10.0.50.46:80/ch5_0.264
+      - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.253:554/stream1
+      - tapo://{FRIGATE_TAPO_CLOUD_PASSWORD}@10.0.50.253
     side_pad_cam_sub:
-      - rtsp://admin:password@10.0.50.46:80/ch5_1.264
-    shop_cam:
-      - rtsp://admin:password@10.0.50.46:80/ch6_0.264
-    shop_cam_sub:
-      - rtsp://admin:password@10.0.50.46:80/ch6_1.264
-    treeline_camera:
-      - rtsp://admin:password@10.0.50.46:80/ch7_0.264
-    treeline_camera_sub:
-      - rtsp://admin:password@10.0.50.46:80/ch7_1.264
+      - rtsp://starforge:{FRIGATE_TAPO_PASSWORD}@10.0.50.253:554/stream2
 
   webrtc:
     candidates:
@@ -455,74 +426,6 @@ cameras:
           enabled: true
           coordinates: 0.365,0.055,0,0.003,0,0,0.365,0
 
-  dumpster_cam:
-    enabled: true
-    ffmpeg:
-      inputs:
-        - path: rtsp://127.0.0.1:8554/dumpster_cam_sub
-          input_args: preset-rtsp-restream
-          roles:
-            - detect
-        - path: rtsp://127.0.0.1:8554/dumpster_cam
-          input_args: preset-rtsp-restream
-          roles:
-            - record
-    live:
-      streams:
-        Main: dumpster_cam
-        Sub: dumpster_cam_sub
-
-  storefront_garage_cam:
-    enabled: true
-    ffmpeg:
-      inputs:
-        - path: rtsp://127.0.0.1:8554/storefront_garage_cam_sub
-          input_args: preset-rtsp-restream
-          roles:
-            - detect
-        - path: rtsp://127.0.0.1:8554/storefront_garage_cam
-          input_args: preset-rtsp-restream
-          roles:
-            - record
-    live:
-      streams:
-        Main: storefront_garage_cam
-        Sub: storefront_garage_cam_sub
-
-  building_side_cam:
-    enabled: true
-    ffmpeg:
-      inputs:
-        - path: rtsp://127.0.0.1:8554/building_side_cam_sub
-          input_args: preset-rtsp-restream
-          roles:
-            - detect
-        - path: rtsp://127.0.0.1:8554/building_side_cam
-          input_args: preset-rtsp-restream
-          roles:
-            - record
-    live:
-      streams:
-        Main: building_side_cam
-        Sub: building_side_cam_sub
-
-  # wireless_nvr_3:
-  #   enabled: true
-  #   ffmpeg:
-  #     inputs:
-  #       - path: rtsp://127.0.0.1:8554/wireless_nvr_3_sub
-  #         input_args: preset-rtsp-restream
-  #         roles:
-  #           - detect
-  #       - path: rtsp://127.0.0.1:8554/wireless_nvr_3
-  #         input_args: preset-rtsp-restream
-  #         roles:
-  #           - record
-  #   live:
-  #     streams:
-  #       Main: wireless_nvr_3
-  #       Sub: wireless_nvr_3_sub
-
   back_pad_cam:
     enabled: true
     ffmpeg:
@@ -557,39 +460,22 @@ cameras:
         Main: side_pad_cam
         Sub: side_pad_cam_sub
 
-  shop_cam:
+  front_lot_camera:
     enabled: true
     ffmpeg:
       inputs:
-        - path: rtsp://127.0.0.1:8554/shop_cam_sub
+        - path: rtsp://127.0.0.1:8554/front_lot_camera_sub
           input_args: preset-rtsp-restream
           roles:
             - detect
-        - path: rtsp://127.0.0.1:8554/shop_cam
+        - path: rtsp://127.0.0.1:8554/front_lot_camera
           input_args: preset-rtsp-restream
           roles:
             - record
     live:
       streams:
-        Main: shop_cam
-        Sub: shop_cam_sub
-
-  treeline_camera:
-    enabled: true
-    ffmpeg:
-      inputs:
-        - path: rtsp://127.0.0.1:8554/treeline_camera_sub
-          input_args: preset-rtsp-restream
-          roles:
-            - detect
-        - path: rtsp://127.0.0.1:8554/treeline_camera
-          input_args: preset-rtsp-restream
-          roles:
-            - record
-    live:
-      streams:
-        Main: treeline_camera
-        Sub: treeline_camera_sub
+        Main: front_lot_camera
+        Sub: front_lot_camera_sub
 
 record:
   enabled: true
@@ -642,6 +528,5 @@ camera_groups:
       - back_pad_cam
       - loft_worktables_cam
       - car_bay_cam
-      - dumpster_cam
-      - storefront_garage_cam
-      - building_side_cam
+      - front_lot_camera
+      - side_pad_cam
