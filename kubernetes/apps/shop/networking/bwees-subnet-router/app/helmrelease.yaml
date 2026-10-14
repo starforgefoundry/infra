@@ -15,7 +15,7 @@ spec:
           main:
             image:
               repository: tailscale/tailscale
-              tag: 'v1.102.5'
+              tag: 'v1.104.1'
             # The node itself joins the starforge tailnet, so the printer VLAN is
             # advertised into the personal tailnet from this pod instead.
             env:
