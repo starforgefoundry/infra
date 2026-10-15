@@ -1,6 +1,6 @@
 [tools]
 opentofu = "1.13.1"
-helm = "4.3.0"
+helm = "4.3.1"
 kustomize = "5.8.3"
 
 [task_config]
