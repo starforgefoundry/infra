@@ -11,5 +11,15 @@ locals {
       host   = "classes.${local.domain}"
       target = "https://orion.starforgefoundry.com/classes"
     }
+
+    carbay = {
+      host   = "carbay.${local.domain}"
+      target = "https://orion.starforgefoundry.com/car_bay"
+    }
+
+    pass = {
+      host   = "pass.${local.domain}"
+      target = "https://orion.starforgefoundry.com/pass"
+    }
   }
 }
