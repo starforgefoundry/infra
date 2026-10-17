@@ -21,7 +21,7 @@ spec:
           main:
             image: &image
               repository: ghcr.io/starforgefoundry/orion
-              tag: 0.31.2
+              tag: 0.31.3
             command: ['node', '-e', '']
 
       main:
