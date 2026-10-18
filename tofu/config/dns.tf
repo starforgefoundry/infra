@@ -21,5 +21,10 @@ locals {
       host   = "pass.${local.domain}"
       target = "https://orion.starforgefoundry.com/pass"
     }
+
+    print_request = {
+      host   = "3dprint.${local.domain}"
+      target = "https://orion.starforgefoundry.com/print_request"
+    }
   }
 }
