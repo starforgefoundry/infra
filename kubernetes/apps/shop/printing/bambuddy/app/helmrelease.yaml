@@ -17,7 +17,7 @@ spec:
           main:
             image:
               repository: ghcr.io/starforgefoundry/bambuddy
-              tag: '1.2.5.7.6'
+              tag: '1.2.5.7.7'
             env:
               TZ: America/Chicago
             resources:
