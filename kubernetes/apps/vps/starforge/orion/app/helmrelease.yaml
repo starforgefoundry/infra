@@ -9,28 +9,19 @@ spec:
     name: orion
   values:
     controllers:
-      # Pulls the new image onto the node before the upgrade stops the running pod.
-      prepull:
-        type: job
-        annotations:
-          helm.sh/hook: pre-upgrade
-          helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
-        job:
-          backoffLimit: 2
-        containers:
-          main:
-            image: &image
-              repository: ghcr.io/starforgefoundry/orion
-              tag: 0.35.2
-            command: ['node', '-e', '']
-
       main:
-        strategy: Recreate
+        # The old pod keeps serving until the new one passes readiness.
+        strategy: RollingUpdate
+        rollingUpdate:
+          maxSurge: 1
+          maxUnavailable: 0
         annotations:
           reloader.stakater.com/auto: 'true'
         initContainers:
           migrate:
-            image: *image
+            image: &image
+              repository: ghcr.io/starforgefoundry/orion
+              tag: 0.35.2
             command: ['node', 'scripts/migrate.ts']
             env:
               DATABASE_URL: &databaseUrl
