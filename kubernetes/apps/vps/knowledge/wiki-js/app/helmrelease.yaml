@@ -14,7 +14,7 @@ spec:
           main:
             image:
               repository: ghcr.io/requarks/wiki
-              tag: "2.5.316"
+              tag: "2.5.317"
             env:
               DB_TYPE: postgres
               DB_HOST: wiki-js-db-rw
