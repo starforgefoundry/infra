@@ -14,6 +14,16 @@ spec:
       isWALArchiver: true
       parameters:
         barmanObjectName: orion-db-r2
+  managed:
+    services:
+      additional:
+        - selectorType: rw
+          serviceTemplate:
+            metadata:
+              name: orion-db-tailscale
+              annotations:
+                tailscale.com/expose: 'true'
+                tailscale.com/hostname: orion-db
   storage:
     size: 5Gi
     storageClass: miroir
