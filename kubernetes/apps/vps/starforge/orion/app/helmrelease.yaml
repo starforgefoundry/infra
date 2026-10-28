@@ -21,7 +21,7 @@ spec:
           migrate:
             image: &image
               repository: ghcr.io/starforgefoundry/orion
-              tag: 0.37.0
+              tag: 0.37.1
             command: ['node', 'scripts/migrate.ts']
             env:
               DATABASE_URL: &databaseUrl
