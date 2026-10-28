@@ -540,3 +540,4 @@ camera_groups:
       - car_bay_cam
       - front_lot_camera
       - side_pad_cam
+      - shop_worktables_cam
