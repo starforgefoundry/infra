@@ -44,6 +44,15 @@ resource "tailscale_dns_preferences" "preferences" {
   magic_dns = true
 }
 
+resource "tailscale_dns_nameservers" "nameservers" {
+  nameservers = [
+    "1.1.1.1",
+    "1.0.0.1",
+    "2606:4700:4700::1111",
+    "2606:4700:4700::1001",
+  ]
+}
+
 resource "tailscale_oauth_client" "operator" {
   description = "kubernetes operator"
   scopes      = ["devices:core", "auth_keys", "services"]
