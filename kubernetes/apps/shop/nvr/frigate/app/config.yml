@@ -154,6 +154,9 @@ cameras:
       streams:
         Main: lobby_worktables_cam
         Sub: lobby_worktables_cam_sub
+    detect:
+      width: 640
+      height: 360
     motion:
       mask:
         motion_mask_1:
@@ -177,6 +180,9 @@ cameras:
       streams:
         Main: eelab_cam
         Sub: eelab_cam_sub
+    detect:
+      width: 640
+      height: 360
     motion:
       mask:
         motion_mask_1:
@@ -200,6 +206,9 @@ cameras:
       streams:
         Main: storefront_door_cam
         Sub: storefront_door_cam_sub
+    detect:
+      width: 640
+      height: 360
     motion:
       mask:
         motion_mask_1:
@@ -223,6 +232,9 @@ cameras:
       streams:
         Main: machining_room_cam
         Sub: machining_room_cam_sub
+    detect:
+      width: 640
+      height: 360
     motion:
       mask:
         motion_mask_1:
@@ -246,6 +258,9 @@ cameras:
       streams:
         Main: staff_office_cam
         Sub: staff_office_cam_sub
+    detect:
+      width: 640
+      height: 360
     motion:
       mask:
         motion_mask_1:
@@ -277,6 +292,9 @@ cameras:
       streams:
         Main: shop_worktables_cam
         Sub: shop_worktables_cam_sub
+    detect:
+      width: 640
+      height: 360
     motion:
       mask:
         motion_mask_1:
@@ -300,6 +318,9 @@ cameras:
       streams:
         Main: lobby_couches_cam
         Sub: lobby_couches_cam_sub
+    detect:
+      width: 640
+      height: 360
     motion:
       mask:
         motion_mask_1:
@@ -323,6 +344,9 @@ cameras:
       streams:
         Main: welding_room_cam
         Sub: welding_room_cam_sub
+    detect:
+      width: 1280
+      height: 720
     motion:
       mask:
         motion_mask_1:
@@ -353,7 +377,8 @@ cameras:
           enabled: true
           coordinates: 0.365,0.055,0,0.053,0,0,0.365,0
     detect:
-      enabled: false
+      width: 1280
+      height: 720
 
   loft_worktables_cam:
     enabled: true
@@ -378,7 +403,8 @@ cameras:
           enabled: true
           coordinates: 0.365,0.055,0,0.053,0,0,0.365,0
     detect:
-      enabled: false
+      width: 1280
+      height: 720
 
   woodworking_area_cam:
     enabled: true
@@ -396,6 +422,9 @@ cameras:
       streams:
         Main: woodworking_area_cam
         Sub: woodworking_area_cam_sub
+    detect:
+      width: 1280
+      height: 720
     motion:
       mask:
         motion_mask_1:
@@ -419,6 +448,9 @@ cameras:
       streams:
         Main: car_bay_cam
         Sub: car_bay_cam_sub
+    detect:
+      width: 640
+      height: 360
     motion:
       mask:
         motion_mask_1:
@@ -442,6 +474,9 @@ cameras:
       streams:
         Main: back_pad_cam
         Sub: back_pad_cam_sub
+    detect:
+      width: 640
+      height: 360
 
   side_pad_cam:
     enabled: true
@@ -459,6 +494,9 @@ cameras:
       streams:
         Main: side_pad_cam
         Sub: side_pad_cam_sub
+    detect:
+      width: 1280
+      height: 720
     onvif:
       host: 10.0.50.253
       port: 2020
@@ -481,6 +519,9 @@ cameras:
       streams:
         Main: front_lot_camera
         Sub: front_lot_camera_sub
+    detect:
+      width: 1280
+      height: 720
     onvif:
       host: 10.0.50.121
       port: 2020
