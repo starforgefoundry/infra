@@ -117,14 +117,17 @@ spec:
                 port: 8971
 
     persistence:
+      # Frigate skips its startup DB vacuum based on a timestamp it keeps in /config.
       config:
-        type: emptyDir
+        existingClaim: frigate-db
         advancedMounts:
           main:
             config:
               - path: /config
+                subPath: config
             main:
               - path: /config
+                subPath: config
       config-src:
         type: configMap
         name: frigate-config
