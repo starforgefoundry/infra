@@ -20,6 +20,24 @@
 
   # Networking/Clock
   networking.hostName = "shop-server";
+  # Mitigate SPCC recording SSD command timeouts on ata1. Keep this scoped
+  # to its SATA port; the boot NVMe and recording HDD are unaffected.
+  boot.kernelParams = [ "libata.force=1:noncq,1:3.0Gbps" ];
+
+  # Hangs have left no logs because the journal lives on the disk that may be
+  # vanishing. Panic instead so the kernel log lands in EFI pstore, then reboot.
+  # Read it after a crash from /var/lib/systemd/pstore.
+  boot.kernel.sysctl = {
+    "kernel.panic" = 10;
+    "kernel.panic_on_oops" = 1;
+    "kernel.softlockup_panic" = 1;
+    "kernel.hardlockup_panic" = 1;
+    "kernel.hung_task_panic" = 1;
+    # Above the default 120s so slow recording-disk I/O alone does not panic.
+    "kernel.hung_task_timeout_secs" = 300;
+  };
+  systemd.settings.Manager.RuntimeWatchdogSec = "30s";
+
   time.timeZone = "America/Chicago";
 
   networking.firewall.enable = false;
