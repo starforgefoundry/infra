@@ -6,5 +6,3 @@ namespace: networking
 resources:
   - envoy-gateway/ks.yaml
   - tailscale-operator/ks.yaml
-  - bwees-subnet-router/ks.yaml
-  - ismail-subnet-router/ks.yaml
