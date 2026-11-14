@@ -1,7 +1,7 @@
 # Tofu
 
 Infrastructure outside the clusters: the Contabo VPS, the `starforgefoundry.com`
-zone, scoped Cloudflare tokens, the R2 backup bucket, Tailscale policy and the
+zone, the `starforgemakerspace.com`/`.org` redirect zones, scoped Cloudflare tokens, the R2 backup bucket, Tailscale policy and the
 Flux webhooks. Staff provisioning lives in `starforge/staff`.
 
 State is `infra.tfstate` in the `infra-tofu-state` R2 bucket. `tofu/.env`

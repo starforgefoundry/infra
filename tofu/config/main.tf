@@ -48,3 +48,11 @@ module "flux_webhooks" {
   domain     = local.domain
   vault_uuid = local.vault_uuid
 }
+
+module "domain_redirect" {
+  source   = "../modules/domain-redirect"
+  for_each = local.redirect_domains
+
+  domain        = each.key
+  target_origin = "https://${local.domain}"
+}
