@@ -20,9 +20,8 @@
 
   # Networking/Clock
   networking.hostName = "shop-server";
-  # Mitigate SPCC recording SSD command timeouts on ata1. Keep this scoped
-  # to its SATA port; the boot NVMe and recording HDD are unaffected.
-  boot.kernelParams = [ "libata.force=1:noncq,1:3.0Gbps" ];
+  # The SPCC SSD on ata1 hangs and drops off the bus. Keep the kernel off it.
+  boot.kernelParams = [ "libata.force=1:disable" ];
 
   # Hangs have left no logs because the journal lives on the disk that may be
   # vanishing. Panic instead so the kernel log lands in EFI pstore, then reboot.
@@ -76,55 +75,10 @@
     "--advertise-routes=10.0.10.0/24,10.0.60.0/24"
   ];
 
-  # mergerfs
-  environment.systemPackages = with pkgs; [
-    mergerfs
-  ];
-
+  # The SPCC SSD keeps dropping off the bus, so recordings live on the HDD only.
   fileSystems."/mnt/nvr-storage" = {
-    fsType = "fuse.mergerfs";
-    device = "/mnt/nvr-ssd:/mnt/nvr-hdd";
-    options = [
-      "allow_other"
-      "use_ino"
-      "cache.files=partial"
-      "dropcacheonclose=true"
-      "category.create=ff"
-      "moveonenospc=true"
-    ];
-  };
-
-  # Move old recordings from SSD to HDD nightly at 1am
-  systemd.services.migrate-recordings = {
-    description = "Migrate old recordings from SSD to HDD";
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart =
-        let
-          script = pkgs.writeShellScript "migrate-recordings" ''
-            SRC_DIR="/mnt/nvr-ssd/frigate/recordings"
-            DEST_DIR="/mnt/nvr-hdd/frigate/recordings"
-
-            ${pkgs.findutils}/bin/find "$SRC_DIR" -type f -mmin +20160 -print0 | while IFS= read -r -d "" file; do
-              rel_path="''${file#$SRC_DIR/}"
-              dest_file="$DEST_DIR/$rel_path"
-              dest_dir="$(${pkgs.coreutils}/bin/dirname "$dest_file")"
-              ${pkgs.coreutils}/bin/mkdir -p "$dest_dir"
-              ${pkgs.rsync}/bin/rsync -a --remove-source-files "$file" "$dest_file"
-            done
-
-            ${pkgs.findutils}/bin/find "$SRC_DIR" -type d -empty -delete
-          '';
-        in
-        "${script}";
-    };
-  };
-
-  systemd.timers.migrate-recordings = {
-    wantedBy = [ "timers.target" ];
-    timerConfig = {
-      OnCalendar = "*-*-* 01:00:00";
-      Persistent = true;
-    };
+    device = "/mnt/nvr-hdd";
+    fsType = "none";
+    options = [ "bind" ];
   };
 }

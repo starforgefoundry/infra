@@ -58,26 +58,9 @@
           };
         };
       };
-      storage_ssd = {
-        type = "disk";
-        device = "/dev/sda";
-        content = {
-          type = "gpt";
-          partitions = {
-            primary = {
-              size = "100%";
-              content = {
-                type = "filesystem";
-                format = "btrfs";
-                mountpoint = "/mnt/nvr-ssd";
-              };
-            };
-          };
-        };
-      };
       storage_hdd = {
         type = "disk";
-        device = "/dev/sdb";
+        device = "/dev/disk/by-id/ata-ST16000NM001G-2KK103_ZL2L01RB";
         content = {
           type = "gpt";
           partitions = {
