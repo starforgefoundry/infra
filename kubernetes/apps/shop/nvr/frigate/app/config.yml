@@ -543,6 +543,17 @@ record:
       days: 90
       mode: motion
 
+# Suspected: i965 scale_vaapi alongside the GPU detector freezes the host.
+# Decode on the GPU, scale on the CPU.
+ffmpeg:
+  hwaccel_args:
+    - -hwaccel_flags
+    - allow_profile_mismatch
+    - -hwaccel
+    - vaapi
+    - -hwaccel_device
+    - /dev/dri/renderD128
+
 detectors:
   ov:
     type: openvino
