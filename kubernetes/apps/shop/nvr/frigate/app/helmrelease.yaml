@@ -33,8 +33,6 @@ spec:
               tag: '0.18.2'
             env:
               TZ: America/Chicago
-              # iHD fails VAAPI surface syncs on this Skylake iGPU, crashing detect ffmpeg
-              LIBVA_DRIVER_NAME: i965
             envFrom:
               - secretRef:
                   name: frigate
