@@ -44,13 +44,6 @@ in
     "--node-external-ip=${addresses.ipv4}"
   ];
 
-  # envoy-dfp claims the public IP as a Service externalIP and forward-proxies
-  # *.starforgefoundry.com to whichever cluster owns the hostname.
-  networking.firewall.allowedTCPPorts = [
-    80
-    443
-  ];
-
   # Allow inbound UDP to the Tailscale ingress static-endpoint NodePorts on the
   # public interface. Must match spec.staticEndpoints.nodePort.ports of the
   # `vps-static-endpoints` ProxyClass.

@@ -27,7 +27,7 @@ spec:
       # external-dns reads the zone back by AXFR to work out what it already owns.
       - --rfc2136-axfr
       - --rfc2136-min-ttl=60s
-      # The forward proxy on the vps reaches every cluster over the tailnet, so
+      # The forward proxy on shop reaches every cluster over the tailnet, so
       # each record is a CNAME to that cluster's ingress VIPService.
       - --default-targets=${CLUSTER}-ingress.tail04f5a4.ts.net
       - --force-default-targets

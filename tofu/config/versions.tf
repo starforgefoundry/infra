@@ -25,6 +25,11 @@ terraform {
       version = "0.1.44"
     }
 
+    opwan = {
+      source  = "registry.terraform.io/slop-place/opwan"
+      version = "0.2.0"
+    }
+
     random = {
       source  = "hashicorp/random"
       version = "3.9.1"

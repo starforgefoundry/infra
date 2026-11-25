@@ -16,7 +16,7 @@ spec:
   upgrade:
     crds: CreateReplace
   values:
-    # starforgefoundry.com has a split-horizon view (the vps bind9) that holds no
+    # starforgefoundry.com has a split-horizon view (the shop bind9) that holds no
     # _acme-challenge records, so the self check must not follow cluster DNS.
     dns01RecursiveNameservers: 1.1.1.1:53,1.0.0.1:53
     dns01RecursiveNameserversOnly: true

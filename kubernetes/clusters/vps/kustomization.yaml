@@ -27,8 +27,6 @@ patches:
               postBuild:
                 substitute:
                   CLUSTER: vps
-                  # tofu output contabo_public_ipv4
-                  VPS_PUBLIC_IPV4: 194.238.28.254
 
   - target:
       group: kustomize.toolkit.fluxcd.io

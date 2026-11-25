@@ -25,6 +25,10 @@ provider "contabo" {
   oauth2_pass          = local.credentials["contabo"].field_map["password"].value
 }
 
+provider "opwan" {
+  api_token = local.credentials["opwan"].field_map["api_token"].value
+}
+
 provider "tailscale" {
   oauth_client_id     = local.credentials["tailscale"].field_map["client_id"].value
   oauth_client_secret = local.credentials["tailscale"].field_map["client_secret"].value

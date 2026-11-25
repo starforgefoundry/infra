@@ -2,12 +2,18 @@ module "contabo" {
   source = "../modules/contabo"
 }
 
+module "opwan" {
+  source = "../modules/opwan"
+
+  vault_uuid = local.vault_uuid
+}
+
 module "dns" {
   source = "../modules/dns"
 
   zone_id             = local.zone_id
   redirects           = local.dns_redirects
-  public_ingress_ipv4 = local.public_ingress_enabled ? module.contabo.public_ipv4 : null
+  public_ingress_ipv4 = local.public_ingress_enabled ? module.opwan.dfw_ipv4 : null
 }
 
 module "api_tokens" {
