@@ -11,8 +11,12 @@ spec:
     name: flux-system
     namespace: flux-system
   dependsOn:
+    - name: envoy-gateway
+      namespace: networking
     - name: miroir-config
       namespace: storage
-    - name: tailscale-operator-proxies
-      namespace: networking
+    - name: plugin-barman-cloud
+      namespace: operators
+    - name: onepassword
+      namespace: secrets
   targetNamespace: knowledge

@@ -72,13 +72,21 @@ spec:
     service:
       main:
         controller: main
-        annotations:
-          tailscale.com/expose: "true"
-          tailscale.com/hostname: wiki-v3
         ports:
           http:
-            port: 80
-            targetPort: 3000
+            port: 3000
+
+    route:
+      main:
+        parentRefs:
+          - name: envoy-ingress
+            namespace: networking
+        hostnames:
+          - wiki.starforgefoundry.com
+        rules:
+          - backendRefs:
+              - identifier: main
+                port: 3000
 
     persistence:
       data:

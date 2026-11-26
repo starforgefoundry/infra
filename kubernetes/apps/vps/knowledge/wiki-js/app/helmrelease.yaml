@@ -61,18 +61,6 @@ spec:
           http:
             port: 3000
 
-    route:
-      main:
-        parentRefs:
-          - name: envoy-ingress
-            namespace: networking
-        hostnames:
-          - wiki.starforgefoundry.com
-        rules:
-          - backendRefs:
-              - identifier: main
-                port: 3000
-
     persistence:
       data:
         type: emptyDir
