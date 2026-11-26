@@ -9,9 +9,6 @@ spec:
     initdb:
       database: wiki
       owner: wiki
-      postInitApplicationSQL:
-        - CREATE EXTENSION IF NOT EXISTS ltree
-        - CREATE EXTENSION IF NOT EXISTS pg_trgm
   storage:
     size: 5Gi
     storageClass: miroir
