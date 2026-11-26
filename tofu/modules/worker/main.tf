@@ -1,6 +1,11 @@
 resource "cloudflare_worker" "this" {
   account_id = var.account_id
   name       = var.name
+
+  subdomain = {
+    enabled          = true
+    previews_enabled = true
+  }
 }
 
 resource "cloudflare_workers_custom_domain" "this" {
