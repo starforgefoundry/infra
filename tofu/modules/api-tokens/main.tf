@@ -66,3 +66,37 @@ resource "onepassword_item" "cf_pages_deployment" {
     }
   }
 }
+
+resource "cloudflare_account_token" "fuckmesh_deploy" {
+  account_id = var.account_id
+  name       = "fuckmesh-deploy"
+
+  policies = [
+    {
+      effect = "allow"
+      permission_groups = [
+        { id = "8d28297797f24fb8a0c332fe0866ec89" }, # Pages Edit
+      ]
+      resources = jsonencode({
+        "com.cloudflare.api.account.${var.account_id}" = "*"
+      })
+    }
+  ]
+}
+
+resource "onepassword_item" "cf_fuckmesh_deploy" {
+  vault    = var.vault_uuid
+  title    = "fuckmesh-deploy"
+  category = "password"
+
+  section_map = {
+    "credentials" = {
+      field_map = {
+        "token" = {
+          type  = "CONCEALED"
+          value = cloudflare_account_token.fuckmesh_deploy.value
+        }
+      }
+    }
+  }
+}
