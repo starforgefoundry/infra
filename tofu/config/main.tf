@@ -24,6 +24,15 @@ module "api_tokens" {
   vault_uuid = local.vault_uuid
 }
 
+module "fuckmesh_pages" {
+  source = "../modules/pages-project"
+
+  account_id = local.account_id
+  zone_id    = local.zone_id
+  name       = "fuckmesh"
+  hostname   = "fuckmesh.${local.domain}"
+}
+
 module "restic" {
   source = "../modules/restic"
 
