@@ -1,0 +1,122 @@
+<script>
+(function () {
+  var STORAGE_KEY = 'sf-theme';
+  var APPEARANCE_DARK = 'dark';
+  var APPEARANCE_LIGHT = 'light';
+  var POLL_MS = 50;
+  var POLL_LIMIT_MS = 10000;
+
+  function waitFor(test, done) {
+    var started = Date.now();
+    (function poll() {
+      var value = test();
+      if (value) return done(value);
+      if (Date.now() - started < POLL_LIMIT_MS) setTimeout(poll, POLL_MS);
+    })();
+  }
+
+  function appContext() {
+    var root = document.getElementById('app');
+    var app = root && root.__vue_app__;
+    if (!app) return null;
+    var props = app.config.globalProperties;
+    var user = props.$pinia && props.$pinia._s.get('user');
+    return user && props.$router ? { user: user, router: props.$router } : null;
+  }
+
+  function isDark() {
+    return document.body.classList.contains('body--dark');
+  }
+
+  function storedAppearance() {
+    try { return localStorage.getItem(STORAGE_KEY); } catch (e) { return null; }
+  }
+
+  function storeAppearance(value) {
+    try { localStorage.setItem(STORAGE_KEY, value); } catch (e) {}
+  }
+
+  function setupThemeButton(ctx) {
+    var saved = storedAppearance();
+    if (saved === APPEARANCE_DARK || saved === APPEARANCE_LIGHT) ctx.user.appearance = saved;
+
+    var button = document.createElement('button');
+    button.id = 'sf-theme-btn';
+    button.type = 'button';
+    button.setAttribute('aria-label', 'Toggle light or dark mode');
+    function label() {
+      button.textContent = isDark() ? '☀ Light mode' : '☾ Dark mode';
+    }
+    button.onclick = function () {
+      var next = isDark() ? APPEARANCE_LIGHT : APPEARANCE_DARK;
+      ctx.user.appearance = next;
+      storeAppearance(next);
+    };
+    document.body.appendChild(button);
+    label();
+    new MutationObserver(label).observe(document.body, { attributes: true, attributeFilter: ['class'] });
+  }
+
+  function normalizePath(path) {
+    path = (path || '').split('#')[0].split('?')[0].replace(/^\/en(?=\/|$)/, '').replace(/\/+$/, '');
+    return (path === '' || path === '/home') ? '/' : path;
+  }
+
+  function sidebarSequence() {
+    var links = document.querySelectorAll('.sidebar-nav-list a.w-item');
+    var seq = [];
+    for (var i = 0; i < links.length; i++) {
+      var href = links[i].getAttribute('href') || '';
+      if (links[i].getAttribute('target') === '_blank' || /^https?:/i.test(href)) continue;
+      seq.push({ href: href, path: normalizePath(href), title: links[i].textContent.trim() });
+    }
+    return seq;
+  }
+
+  function card(router, entry, cls, word) {
+    var a = document.createElement('a');
+    a.className = 'sf-pn ' + cls;
+    a.href = entry.href;
+    a.onclick = function (ev) {
+      if (ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.button !== 0) return;
+      ev.preventDefault();
+      router.push(entry.href);
+    };
+    var small = document.createElement('small');
+    small.textContent = word;
+    a.appendChild(small);
+    a.appendChild(document.createTextNode(entry.title));
+    return a;
+  }
+
+  function renderPrevNext(router) {
+    var old = document.querySelector('.sf-pn-row');
+    if (old) old.remove();
+    var path = normalizePath(location.pathname);
+    if (path === '/') return;
+    waitFor(function () {
+      var contents = document.querySelector('.page-contents');
+      var seq = sidebarSequence();
+      return contents && contents.childElementCount && seq.length ? { contents: contents, seq: seq } : null;
+    }, function (found) {
+      if (document.querySelector('.sf-pn-row')) return;
+      var idx = found.seq.findIndex(function (s) { return s.path === path; });
+      if (idx < 0) return;
+      var prev = found.seq[idx - 1];
+      var next = found.seq[idx + 1];
+      var row = document.createElement('nav');
+      row.className = 'sf-pn-row';
+      row.setAttribute('aria-label', 'Previous and next pages');
+      row.appendChild(prev ? card(router, prev, 'sf-prev', '← Previous') : document.createElement('span'));
+      if (next) row.appendChild(card(router, next, 'sf-next', 'Next →'));
+      found.contents.parentNode.insertBefore(row, found.contents.nextSibling);
+    });
+  }
+
+  waitFor(appContext, function (ctx) {
+    setupThemeButton(ctx);
+    ctx.router.afterEach(function () { setTimeout(function () { renderPrevNext(ctx.router); }, 0); });
+    renderPrevNext(ctx.router);
+  });
+})();
+</script>
