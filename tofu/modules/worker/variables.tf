@@ -13,8 +13,3 @@ variable "name" {
 variable "hostname" {
   type = string
 }
-
-variable "production_branch" {
-  type    = string
-  default = "main"
-}

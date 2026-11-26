@@ -24,8 +24,8 @@ module "api_tokens" {
   vault_uuid = local.vault_uuid
 }
 
-module "fuckmesh_pages" {
-  source = "../modules/pages-project"
+module "fuckmesh_worker" {
+  source = "../modules/worker"
 
   account_id = local.account_id
   zone_id    = local.zone_id

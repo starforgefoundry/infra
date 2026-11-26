@@ -15,7 +15,7 @@ Item `infra-tofu-credentials` in the `Starforge Deployment` 1Password vault:
 
 | Section      | Fields                                     | Permissions                                                              |
 | ------------ | ------------------------------------------ | ------------------------------------------------------------------------ |
-| `cloudflare` | `api_token`                                | Account: API Tokens Edit, Workers R2 Storage Edit, Cloudflare Pages Edit; zone: Zone Read, DNS Edit |
+| `cloudflare` | `api_token`                                | Account: API Tokens Edit, Workers R2 Storage Edit, Workers Scripts Edit; zone: Zone Read, DNS Edit |
 | `github`     | `token`                                    | `starforgefoundry/infra`: Webhooks read/write                            |
 | `contabo`    | `client_id`, `client_secret`, `username`, `password` | Contabo API                                                    |
 | `tailscale`  | `client_id`, `client_secret`               | OAuth client, all scopes                                                 |

@@ -75,7 +75,7 @@ resource "cloudflare_account_token" "fuckmesh_deploy" {
     {
       effect = "allow"
       permission_groups = [
-        { id = "8d28297797f24fb8a0c332fe0866ec89" }, # Pages Edit
+        { id = "e086da7e2179491d91ee5f35b3ca210a" }, # Workers Scripts Edit
       ]
       resources = jsonencode({
         "com.cloudflare.api.account.${var.account_id}" = "*"
