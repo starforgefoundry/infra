@@ -1,0 +1,23 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: wiki-js-v3-db
+spec:
+  instances: 1
+  imageName: ghcr.io/cloudnative-pg/postgresql:18.4-standard-trixie
+  bootstrap:
+    initdb:
+      database: wiki
+      owner: wiki
+      postInitApplicationSQL:
+        - CREATE EXTENSION IF NOT EXISTS ltree
+        - CREATE EXTENSION IF NOT EXISTS pg_trgm
+  storage:
+    size: 5Gi
+    storageClass: miroir
+  resources:
+    requests:
+      cpu: 50m
+      memory: 256Mi
+    limits:
+      memory: 1Gi

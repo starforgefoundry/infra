@@ -1,0 +1,87 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: wiki-js-v3
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: wiki-js-v3
+  values:
+    controllers:
+      main:
+        containers:
+          main:
+            image:
+              repository: ghcr.io/requarks/wiki
+              tag: "3.6.1"
+            env:
+              DB_HOST: wiki-js-v3-db-rw
+              DB_PORT: "5432"
+              DB_SSL: "false"
+              DB_NAME:
+                valueFrom:
+                  secretKeyRef:
+                    name: wiki-js-v3-db-app
+                    key: dbname
+              DB_USER:
+                valueFrom:
+                  secretKeyRef:
+                    name: wiki-js-v3-db-app
+                    key: username
+              DB_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: wiki-js-v3-db-app
+                    key: password
+            securityContext:
+              runAsUser: 1000
+              runAsGroup: 1000
+              runAsNonRoot: true
+            resources:
+              requests:
+                cpu: 50m
+                memory: 256Mi
+              limits:
+                memory: 2Gi
+            probes:
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /_live
+                    port: 3000
+                  periodSeconds: 5
+                  failureThreshold: 60
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /_live
+                    port: 3000
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /_ready
+                    port: 3000
+
+    service:
+      main:
+        controller: main
+        annotations:
+          tailscale.com/expose: "true"
+          tailscale.com/hostname: wiki-v3
+        ports:
+          http:
+            port: 80
+            targetPort: 3000
+
+    persistence:
+      data:
+        type: emptyDir
+        globalMounts:
+          - path: /wiki/data

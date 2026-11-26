@@ -5,3 +5,4 @@ namespace: knowledge
 resources:
   - namespace.yaml
   - wiki-js/ks.yaml
+  - wiki-js-v3/ks.yaml
